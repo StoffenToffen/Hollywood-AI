@@ -89,7 +89,9 @@ const Footer = () => {
               Subscribe
             </button>
           </form>
-          <span className="copyright__text">{new Date().getFullYear()} Copyright © Hollywood AI</span>
+          <span className="copyright__text">
+            {new Date().getFullYear()} Copyright © Hollywood AI
+          </span>
         </div>
       </section>
     </footer>
