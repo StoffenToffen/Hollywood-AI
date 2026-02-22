@@ -30,10 +30,12 @@ const Summary = () => {
               alt=""
               className="summary__figure__img"
             />
-            <span className="summary__figure__caption1">
-              Search. Summarise. Repeat.
-            </span>
-            <span className="summary__figure__caption2">Powered by AI</span>
+            <figcaption className="summary__figure__caption">
+              <span className="summary__figure__caption1">
+                Search. Summarise. Repeat.
+              </span>
+              <span className="summary__figure__caption2">Powered by AI</span>
+            </figcaption>
           </figure>
         </div>
       </div>

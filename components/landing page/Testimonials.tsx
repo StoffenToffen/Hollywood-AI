@@ -20,7 +20,7 @@ const Testimonials = () => {
                 height={0}
                 sizes="100vw"
                 src="/assets/testimonial-1.png"
-                alt=""
+                alt="Olivia Chapman"
                 className="testimonial__img"
               />
               <span className="testimonial__name">Olivia Chapman</span>
@@ -36,7 +36,7 @@ const Testimonials = () => {
                 height={0}
                 sizes="100vw"
                 src="/assets/testimonial-2.png"
-                alt=""
+                alt="Eric Fisherman"
                 className="testimonial__img"
               />
               <span className="testimonial__name">Eric Fisherman</span>
@@ -52,7 +52,7 @@ const Testimonials = () => {
                 height={0}
                 sizes="100vw"
                 src="/assets/testimonial-3.png"
-                alt=""
+                alt="Anisong Silkum"
                 className="testimonial__img"
               />
               <span className="testimonial__name">Anisong Silkum</span>

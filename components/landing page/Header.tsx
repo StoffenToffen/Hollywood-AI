@@ -19,6 +19,7 @@ const Header = () => {
           <Image
             width={0}
             height={0}
+            sizes="100vw"
             src="/assets/bolt.svg"
             alt="lightning bolt"
             className="header__title__icon"
@@ -30,7 +31,7 @@ const Header = () => {
         </p>
         <Link href="#" className="header__button">
           <div className="header__button__iconWrapper">
-            <Play fill="true" className="header__button__icon" />
+            <Play fill="currentColor" className="header__button__icon" />
           </div>
           <span className="header__button__text">See how it works &nbsp;</span>
         </Link>

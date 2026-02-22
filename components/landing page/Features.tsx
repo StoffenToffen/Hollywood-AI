@@ -12,11 +12,11 @@ const Features = () => {
     <section id="features">
       <div className="container">
         <div className="row features__row">
-          <h1 className="features__title">The future of AI.</h1>
-          <div className="features__para">
+          <h2 className="features__title">The future of AI.</h2>
+          <p className="features__para">
             HollywoodAI is designed to help you enjoy high-quality summaries
             instantly, without breaking a sweat.
-          </div>
+          </p>
           <div className="features__list">
             <div className="feature">
               <div className="feature__iconWrapper">

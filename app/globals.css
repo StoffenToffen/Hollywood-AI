@@ -1,20 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap");
-
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Onest", sans-serif;
+  font-family: var(--font-onest), sans-serif;
 }
 
 button {
   cursor: pointer;
-  outline: none;
 }
 
 a {
   text-decoration: none;
-  outline: none;
 }
 
 .container {
@@ -59,7 +55,6 @@ nav {
   font-weight: 600;
   border-radius: 8px;
   transition: 300ms;
-  cursor: not-allowed;
 }
 
 .nav__link:hover {
@@ -384,6 +379,12 @@ header {
   border-radius: 12px;
 }
 
+.summary__figure__caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .summary__figure__caption1 {
   color: rgb(74, 74, 74);
   font-size: 17px;
@@ -403,7 +404,7 @@ header {
 /* Steps */
 
 .steps__row {
-  background-image: url(/assets/steps-bg.jpg);
+  background-image: url("/assets/steps-bg.jpg");
   border-radius: 50px;
   background-color: #010101;
   background-size: cover;
@@ -490,7 +491,7 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url(/assets/world-map.png);
+  background-image: url("/assets/world-map.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -641,7 +642,7 @@ footer {
 }
 
 .cta__button:hover {
-  scale: 1.1;
+  transform: scale(1.1);
 }
 
 .cta__button__icon {
@@ -709,7 +710,6 @@ footer {
   padding: 20px 28px;
   background: #ffffff11;
   border-radius: 8px;
-  outline: none;
   border: none;
   font-size: 16px;
   color: white;

@@ -15,17 +15,17 @@ const Nav = () => {
         />
       </Link>
       <div className="nav__links">
-        <Link href="#" className="nav__link">
+        <Link href="#summary" className="nav__link">
           About
         </Link>
-        <Link href="#" className="nav__link">
+        <Link href="#features" className="nav__link">
           Features
         </Link>
-        <Link href="#" className="nav__link">
+        <Link href="#steps" className="nav__link">
           How it works
         </Link>
-        <Link href="#" className="nav__link">
-          Privacy policy
+        <Link href="#testimonials" className="nav__link">
+          Testimonials
         </Link>
       </div>
       <button type="button" className="nav__button">

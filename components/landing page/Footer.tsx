@@ -81,7 +81,7 @@ const Footer = () => {
         <div className="copyright__container">
           <form action="" className="copyright__form">
             <input
-              type="text"
+              type="email"
               className="copyright__form__input"
               placeholder="Enter your email"
             />
@@ -89,7 +89,7 @@ const Footer = () => {
               Subscribe
             </button>
           </form>
-          <span className="copyright__text">2024 Copyright © Hollywood AI</span>
+          <span className="copyright__text">{new Date().getFullYear()} Copyright © Hollywood AI</span>
         </div>
       </section>
     </footer>
