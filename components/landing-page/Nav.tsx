@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useModalStore } from "@/zustand/modalStore";
 
 const Nav = () => {
+  const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
+
   return (
     <nav>
       <Link href="#">
@@ -28,7 +33,7 @@ const Nav = () => {
           Testimonials
         </Link>
       </div>
-      <button type="button" className="nav__button">
+      <button type="button" className="nav__button" onClick={toggleLoginModal}>
         Sign In
       </button>
     </nav>

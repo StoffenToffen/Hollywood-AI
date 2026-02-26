@@ -1,8 +1,12 @@
+"use client";
+
 import { Play } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useModalStore } from "@/zustand/modalStore";
 
 const Header = () => {
+  const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
+
   return (
     <header>
       <div className="row header__row">
@@ -29,12 +33,16 @@ const Header = () => {
           All-in-one platform to watch your favourite movies in minutes using
           AI.
         </p>
-        <Link href="#" className="header__button">
+        <button
+          type="button"
+          className="header__button"
+          onClick={toggleLoginModal}
+        >
           <div className="header__button__iconWrapper">
             <Play fill="currentColor" className="header__button__icon" />
           </div>
           <span className="header__button__text">See how it works &nbsp;</span>
-        </Link>
+        </button>
       </div>
       <svg
         className="header__svg"

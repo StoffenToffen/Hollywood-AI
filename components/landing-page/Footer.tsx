@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SiFacebook,
   SiInstagram,
@@ -6,8 +8,11 @@ import {
 } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useModalStore } from "@/zustand/modalStore";
 
 const Footer = () => {
+  const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
+
   return (
     <footer>
       <section id="cta">
@@ -33,7 +38,11 @@ const Footer = () => {
               Enjoy your favourite movies in minutes by letting AI do the work
               for you.
             </p>
-            <button type="button" className="cta__button">
+            <button
+              type="button"
+              className="cta__button"
+              onClick={toggleLoginModal}
+            >
               <span className="cta__button__text">Join HollywoodAI</span>
               <Image
                 width={0}
