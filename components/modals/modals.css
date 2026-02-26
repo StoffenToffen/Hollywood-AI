@@ -17,8 +17,16 @@
 
 .modal__close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  padding: 4px;
+
+  &:hover {
+    background-color: #ebebeb;
+  }
 }
 
 .modal__title {
@@ -87,6 +95,10 @@
   color: #4f46e5;
   align-self: flex-end;
   font-size: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .modal__form__submit {
@@ -96,6 +108,11 @@
   border-radius: 40px;
   padding: 12px 0;
   font-weight: 500;
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #4f46e5;
+  }
 }
 
 .modal__txt {
@@ -106,12 +123,16 @@
   color: #4f46e5;
   margin-left: 4px;
   font-size: 12px;
-  text-decoration: underline;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 @media screen and (max-width: 480px) {
   .modal__wrapper {
     width: 100%;
     height: 100%;
+    border-radius: 0;
   }
 }

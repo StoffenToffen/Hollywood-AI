@@ -20,12 +20,17 @@ const Login = () => {
     <Modal
       open={isOpen}
       onClose={toggleLoginModal}
-      aria-labelledby="modal-Login"
+      aria-label="login dialog"
       className="modal"
     >
       <div className="modal__wrapper">
-        <button type="button">
-          <X className="modal__close" onClick={toggleLoginModal} />
+        <button
+          type="button"
+          aria-label="close dialog"
+          className="modal__close"
+          onClick={toggleLoginModal}
+        >
+          <X />
         </button>
 
         <h2 className="modal__title">{isLogin ? "Log In" : "Sign Up"}</h2>
@@ -65,6 +70,7 @@ const Login = () => {
           <input
             type="email"
             name="email"
+            id="email"
             placeholder="your@email.com"
             className="modal__form__input"
           />
@@ -76,6 +82,7 @@ const Login = () => {
           <input
             type="password"
             name="password"
+            id="password"
             placeholder="Your password"
             className="modal__form__input"
           />
@@ -94,7 +101,7 @@ const Login = () => {
           )}
 
           <button type="button" className="modal__form__submit">
-            Log In
+            {isLogin ? "Log In" : "Sign Up"}
           </button>
         </form>
 

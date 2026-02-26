@@ -14,12 +14,16 @@ const ForgotPassword = () => {
     <Modal
       open={isOpen}
       onClose={togglePasswordModal}
-      aria-labelledby="modal-Login"
+      aria-label="forgot password dialog"
       className="modal"
     >
       <div className="modal__wrapper">
-        <button type="button">
-          <X className="modal__close" onClick={togglePasswordModal} />
+        <button
+          type="button"
+          aria-label="close dialog"
+          onClick={togglePasswordModal}
+        >
+          <X className="modal__close" />
         </button>
 
         <h2 className="modal__title">Forgot Password</h2>
@@ -32,6 +36,7 @@ const ForgotPassword = () => {
           <input
             type="email"
             name="email"
+            id="email"
             placeholder="your@email.com"
             className="modal__form__input"
           />
