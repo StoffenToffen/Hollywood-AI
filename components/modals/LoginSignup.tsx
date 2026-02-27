@@ -4,10 +4,11 @@ import { Modal } from "@mui/material";
 import type { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
+  signInAnonymously,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { User, X } from "lucide-react";
+import { UserIcon, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,7 +33,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  const signup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const signup: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -42,7 +43,7 @@ const Login = () => {
     }
   };
 
-  const login = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const login: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
@@ -56,22 +57,26 @@ const Login = () => {
   };
 
   const guestLogin = async () => {
-    const { user } = await signInWithEmailAndPassword(
-      auth,
-      "guest123@gmail.com",
-      "12345678",
-    );
+    try {
+      const { user } = await signInAnonymously(auth);
 
-    if (user) {
-      router.push("/dashboard");
+      if (user) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
   };
 
   const googleLogin = async () => {
-    const { user } = await signInWithPopup(auth, provider);
+    try {
+      const { user } = await signInWithPopup(auth, provider);
 
-    if (user) {
-      router.push("/dashboard");
+      if (user) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
   };
 
@@ -118,7 +123,7 @@ const Login = () => {
           className="modal__login-option"
           onClick={guestLogin}
         >
-          <User fill="currentColor" className="modal__login-option__icon" />
+          <UserIcon fill="currentColor" className="modal__login-option__icon" />
 
           <span>Login as Guest</span>
         </button>

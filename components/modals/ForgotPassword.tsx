@@ -19,7 +19,9 @@ const ForgotPassword = () => {
     (state) => state.togglePasswordModal,
   );
 
-  const resetPassword = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const resetPassword: React.SubmitEventHandler<HTMLFormElement> = async (
+    e,
+  ) => {
     e.preventDefault();
     try {
       await sendPasswordResetEmail(auth, email);

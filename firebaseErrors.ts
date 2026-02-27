@@ -5,7 +5,7 @@ const mapAuthCodeToMessage = (authCode: string) => {
     case "auth/invalid-credential":
       return "Invalid email or password.";
     case "auth/weak-password":
-      return "Password must be at least 8 characters.";
+      return "Password is too weak. Please use a stronger password.";
     case "auth/email-already-in-use":
       return "An account with this email already exists.";
     default:
