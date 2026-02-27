@@ -1,26 +1,29 @@
 "use client";
 
 import { Modal } from "@mui/material";
+import type { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
 } from "firebase/auth";
 import { User, X } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth, provider } from "@/firebase";
+import { mapAuthCodeToMessage } from "@/firebaseErrors";
 import { useModalStore } from "@/zustand/modalStore";
 
 import "./modals.css";
-import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
-  
+
+  const error = useModalStore((state) => state.error);
+  const setError = useModalStore((state) => state.setError);
   const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const togglePasswordModal = useModalStore(
@@ -29,16 +32,26 @@ const Login = () => {
 
   const router = useRouter();
 
-  const signup = async () => {
-    await createUserWithEmailAndPassword(auth, email, password);
-    login();
+  const signup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      login(e);
+    } catch (err) {
+      setError(mapAuthCodeToMessage((err as FirebaseError).code));
+    }
   };
 
-  const login = async () => {
-    const { user } = await signInWithEmailAndPassword(auth, email, password);
+  const login = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-    if (user) {
-      router.push("/dashboard");
+      if (user) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
   };
 
@@ -81,6 +94,8 @@ const Login = () => {
 
         <h2 className="modal__title">{isLogin ? "Log In" : "Sign Up"}</h2>
 
+        <span className="modal__error">{error}</span>
+
         <button
           type="button"
           className="modal__login-option"
@@ -111,12 +126,17 @@ const Login = () => {
         <div className="modal__break">
           <div className="modal__break__line" />
 
-          <span onClick={() => signOut(auth)}>or</span>
+          <span>or</span>
 
           <div className="modal__break__line" />
         </div>
 
-        <form className="modal__form">
+        <form
+          className="modal__form"
+          onSubmit={(e) => {
+            isLogin ? login(e) : signup(e);
+          }}
+        >
           <label htmlFor="email" className="modal__form__label">
             Email Address
           </label>
@@ -160,13 +180,7 @@ const Login = () => {
             </button>
           )}
 
-          <button
-            type="button"
-            className="modal__form__submit"
-            onClick={() => {
-              isLogin ? login() : signup();
-            }}
-          >
+          <button type="submit" className="modal__form__submit">
             {isLogin ? "Log In" : "Sign Up"}
           </button>
         </form>
@@ -176,7 +190,10 @@ const Login = () => {
           <button
             type="button"
             className="modal__txt__btn"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError("");
+            }}
           >
             {isLogin ? "Sign Up" : "Log In"}
           </button>
