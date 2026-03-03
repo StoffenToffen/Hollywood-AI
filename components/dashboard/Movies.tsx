@@ -5,7 +5,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const Movies = () => {
+interface MoviesProps {
+  movies: {
+    id: string;
+    director: string;
+    title: string;
+    tagLine: string;
+    imageLink: string;
+    audioLink: string;
+    rating: string;
+    releaseYear: string;
+    type: string;
+    subscriptionRequired: boolean;
+    summary: string;
+    tags: string[];
+    movieDescription: string;
+  }[];
+}
+
+const Movies = ({ movies }: MoviesProps) => {
   const swiperSettings = {
     spaceBetween: 20,
     slidesPerView: 2.3,
@@ -31,34 +49,48 @@ const Movies = () => {
 
   return (
     <Swiper {...swiperSettings} className="movies__list">
-      {new Array(10).fill(null).map((_, i) => (
-        <SwiperSlide key={i}>
-          <Link href="#" className="movie">
-            <span className="movie__pill">Premium</span>
+      {movies
+        ? movies.map(
+            ({
+              id,
+              subscriptionRequired,
+              director,
+              title,
+              rating,
+              imageLink,
+            }) => (
+              <SwiperSlide key={id}>
+                <Link href="#" className="movie">
+                  {subscriptionRequired && (
+                    <span className="movie__pill">Premium</span>
+                  )}
 
-            <Image
-              width={0}
-              height={0}
-              sizes="100vw"
-              src="/assets/movie-poster.jpg"
-              alt="movie title"
-              className="movie__img"
-            />
+                  <Image
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    priority={true}
+                    src={imageLink}
+                    alt={title}
+                    className="movie__img"
+                  />
 
-            <h3 className="movie__title">Avatar</h3>
+                  <h3 className="movie__title">{title}</h3>
 
-            <span className="movie__director">James Cameron</span>
+                  <span className="movie__director">{director}</span>
 
-            <div className="movie__details">
-              <Clock className="movie__details__icon" />
-              <span>10:00</span>
+                  <div className="movie__details">
+                    <Clock className="movie__details__icon" />
+                    <span>10:00</span>
 
-              <Star className="movie__details__icon" />
-              <span>7.9</span>
-            </div>
-          </Link>
-        </SwiperSlide>
-      ))}
+                    <Star className="movie__details__icon" />
+                    <span>{rating}</span>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ),
+          )
+        : null}
     </Swiper>
   );
 };

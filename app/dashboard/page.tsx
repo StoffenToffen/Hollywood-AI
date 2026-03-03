@@ -7,7 +7,26 @@ import "swiper/css/navigation";
 import "../globals.css";
 import "./page.css";
 
-const Page = () => {
+const fetchSelectedMovies = async () => {
+  const response = await fetch(
+    "https://advanced-internship-api-production.up.railway.app/selectedMovies",
+  );
+  const data = await response.json();
+  return data.data;
+};
+
+const fetchTopMovies = async () => {
+  const response = await fetch(
+    "https://advanced-internship-api-production.up.railway.app/topMovies",
+  );
+  const data = await response.json();
+  return data.data;
+};
+
+const Page = async () => {
+  const selectedMovies = await fetchSelectedMovies();
+  const topMovies = await fetchTopMovies()
+
   return (
     <div className="page-wrapper">
       <Nav />
@@ -32,7 +51,7 @@ const Page = () => {
 
             <span className="movies__subtext">We think you'll like these.</span>
 
-            <Movies />
+            <Movies movies={selectedMovies} />
           </div>
         </section>
 
@@ -44,7 +63,7 @@ const Page = () => {
               Enjoy our highest rated films.
             </span>
 
-            <Movies />
+            <Movies movies={topMovies} />
           </div>
         </section>
       </div>
