@@ -1,11 +1,11 @@
-import { Clock, Star } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import Movies from "@/components/dashboard/Movies";
 import Nav from "@/components/dashboard/Nav";
+import Search from "@/components/dashboard/Search";
 
+import "swiper/css";
+import "swiper/css/navigation";
 import "../globals.css";
 import "./page.css";
-import Search from "@/components/dashboard/Search";
 
 const Page = () => {
   return (
@@ -32,34 +32,7 @@ const Page = () => {
 
             <span className="movies__subtext">We think you'll like these.</span>
 
-            <div className="movies__list">
-              {new Array(7).fill(null).map((_, i) => (
-                <Link href="#" key={i} className="movie">
-                  <span className="movie__pill">Premium</span>
-
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    src="/assets/movie-poster.jpg"
-                    alt="movie title"
-                    className="movie__img"
-                  />
-
-                  <h3 className="movie__title">Avatar</h3>
-
-                  <span className="movie__director">James Cameron</span>
-
-                  <div className="movie__details">
-                    <Clock className="movie__details__icon" />
-                    <span>10:00</span>
-
-                    <Star className="movie__details__icon" />
-                    <span>7.9</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <Movies />
           </div>
         </section>
 
@@ -71,34 +44,7 @@ const Page = () => {
               Enjoy our highest rated films.
             </span>
 
-            <div className="movies__list">
-              {new Array(7).fill(null).map((_, i) => (
-                <Link href="#" key={i} className="movie">
-                  <span className="movie__pill">Premium</span>
-
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    src="/assets/movie-poster.jpg"
-                    alt="movie title"
-                    className="movie__img"
-                  />
-
-                  <h3 className="movie__title">Avatar</h3>
-
-                  <span className="movie__director">James Cameron</span>
-
-                  <div className="movie__details">
-                    <Clock className="movie__details__icon" />
-                    <span>10:00</span>
-
-                    <Star className="movie__details__icon" />
-                    <span>7.9</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <Movies />
           </div>
         </section>
       </div>
