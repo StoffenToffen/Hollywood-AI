@@ -60,7 +60,7 @@ const Movies = ({ movies }: MoviesProps) => {
               imageLink,
             }) => (
               <SwiperSlide key={id}>
-                <Link href="#" className="movie">
+                <Link href={`/movie/${id}`} className="movie">
                   {subscriptionRequired && (
                     <span className="movie__pill">Premium</span>
                   )}
