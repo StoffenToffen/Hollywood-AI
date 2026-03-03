@@ -25,7 +25,7 @@ const fetchTopMovies = async () => {
 
 const Page = async () => {
   const selectedMovies = await fetchSelectedMovies();
-  const topMovies = await fetchTopMovies()
+  const topMovies = await fetchTopMovies();
 
   return (
     <div className="page-wrapper">
