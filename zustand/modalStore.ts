@@ -2,20 +2,20 @@ import { create } from "zustand";
 
 interface ModalStore {
   error: string;
-  setError: (err: string) => void;
   isLoginModalOpen: boolean;
-  toggleLoginModal: () => void;
   isPasswordModalOpen: boolean;
+  setError: (err: string) => void;
+  toggleLoginModal: () => void;
   togglePasswordModal: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
   error: "",
-  setError: (err: string) => set(() => ({ error: err })),
   isLoginModalOpen: false,
-  toggleLoginModal: () =>
-    set((state) => ({ isLoginModalOpen: !state.isLoginModalOpen })),
   isPasswordModalOpen: false,
+  setError: (err) => set(() => ({ error: err })),
+  toggleLoginModal: () =>
+    set((state) => ({ isLoginModalOpen: !state.isLoginModalOpen, error: "" })),
   togglePasswordModal: () =>
     set((state) => ({
       isPasswordModalOpen: !state.isPasswordModalOpen,
