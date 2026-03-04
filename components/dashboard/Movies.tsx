@@ -69,7 +69,6 @@ const Movies = ({ movies }: MoviesProps) => {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    priority={true}
                     src={imageLink}
                     alt={title}
                     className="movie__img"

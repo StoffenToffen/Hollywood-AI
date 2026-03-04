@@ -7,25 +7,28 @@ import "swiper/css/navigation";
 import "../globals.css";
 import "./page.css";
 
-const fetchSelectedMovies = async () => {
-  const response = await fetch(
-    "https://advanced-internship-api-production.up.railway.app/selectedMovies",
-  );
-  const data = await response.json();
-  return data.data;
-};
+const fetchMovies = async (endpoint: string) => {
+  try {
+    const response = await fetch(
+      `https://advanced-internship-api-production.up.railway.app/${endpoint}`,
+    );
 
-const fetchTopMovies = async () => {
-  const response = await fetch(
-    "https://advanced-internship-api-production.up.railway.app/topMovies",
-  );
-  const data = await response.json();
-  return data.data;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${endpoint}: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.data;
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const Page = async () => {
-  const selectedMovies = await fetchSelectedMovies();
-  const topMovies = await fetchTopMovies();
+  const [selectedMovies, topMovies] = await Promise.all([
+    fetchMovies("selectedMovies"),
+    fetchMovies("topMovies"),
+  ]);
 
   return (
     <div className="page-wrapper">

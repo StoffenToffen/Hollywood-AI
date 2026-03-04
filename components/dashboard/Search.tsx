@@ -15,12 +15,18 @@ const Search = () => {
 
           <input
             type="text"
+            aria-label="Search for movies"
             placeholder="Search for movies..."
             className="searchbar__input"
           />
         </div>
 
-        <button type="button" className="open-nav" onClick={openNav}>
+        <button
+          type="button"
+          aria-label="Open navigation menu"
+          className="open-nav"
+          onClick={openNav}
+        >
           <Menu />
         </button>
       </div>

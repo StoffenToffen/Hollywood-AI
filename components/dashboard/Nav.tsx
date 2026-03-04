@@ -28,6 +28,15 @@ const Nav = () => {
     document.body.classList.remove("nav-open");
   };
 
+  const handleSignout = async () => {
+    try {
+      await signOut(auth);
+      signOutUser();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <nav className="side-nav">
@@ -41,8 +50,9 @@ const Nav = () => {
         />
 
         <ul className="side-nav__links">
-          <h4 className="side-nav__links__title">Links</h4>
-
+          <li>
+            <h4 className="side-nav__links__title">Links</h4>
+          </li>
           <li>
             <Link
               href="/dashboard"
@@ -66,8 +76,12 @@ const Nav = () => {
           <li>
             <Link
               href="#"
+              aria-disabled="true"
               className="side-nav__link disabled"
-              onClick={closeNav}
+              onClick={(e) => {
+                e.preventDefault();
+                closeNav;
+              }}
             >
               <Search className="side-nav__link__icon" />
               Search
@@ -76,21 +90,29 @@ const Nav = () => {
           <li>
             <Link
               href="#"
+              aria-disabled="true"
               className="side-nav__link disabled"
-              onClick={closeNav}
+              onClick={(e) => {
+                e.preventDefault();
+                closeNav;
+              }}
             >
               <TrendingUp className="side-nav__link__icon" />
               Trending
             </Link>
           </li>
-
-          <h4 className="side-nav__links__title">Extras</h4>
-
+          <li>
+            <h4 className="side-nav__links__title">Extras</h4>
+          </li>
           <li>
             <Link
               href="#"
+              aria-disabled="true"
               className="side-nav__link disabled"
-              onClick={closeNav}
+              onClick={(e) => {
+                e.preventDefault();
+                closeNav;
+              }}
             >
               <CircleQuestionMark className="side-nav__link__icon" />
               Help & Support
@@ -111,10 +133,9 @@ const Nav = () => {
               <button
                 type="button"
                 className="side-nav__link"
-                onClick={async () => {
+                onClick={() => {
                   closeNav();
-                  await signOut(auth);
-                  signOutUser();
+                  handleSignout();
                 }}
               >
                 <LogOut className="side-nav__link__icon" />

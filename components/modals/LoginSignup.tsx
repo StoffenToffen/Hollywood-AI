@@ -37,7 +37,7 @@ const Login = () => {
   const router = useRouter();
 
   const handleLogin = async (
-    e: React.SubmitEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+    e: React.SubmitEvent | React.MouseEvent,
     method?: string,
   ) => {
     e.preventDefault();
@@ -49,6 +49,13 @@ const Login = () => {
           break;
         case "google":
           userCredentials = await signInWithPopup(auth, provider);
+          break;
+        case "newUser":
+          userCredentials = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password,
+          );
           break;
         default:
           userCredentials = await signInWithEmailAndPassword(
@@ -62,16 +69,6 @@ const Login = () => {
         toggleLoginModal();
         router.push("/dashboard");
       }
-    } catch (err) {
-      setError(mapAuthCodeToMessage((err as FirebaseError).code));
-    }
-  };
-
-  const signup: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      handleLogin(e);
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
@@ -136,7 +133,7 @@ const Login = () => {
         <form
           className="modal__form"
           onSubmit={(e) => {
-            isLogin ? handleLogin(e) : signup(e);
+            isLogin ? handleLogin(e) : handleLogin(e, "newUser");
           }}
         >
           <label htmlFor="email" className="modal__form__label">

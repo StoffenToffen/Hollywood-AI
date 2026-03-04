@@ -15,7 +15,7 @@ export const useModalStore = create<ModalStore>((set) => ({
   isPasswordModalOpen: false,
   setError: (err) => set(() => ({ error: err })),
   toggleLoginModal: () =>
-    set((state) => ({ isLoginModalOpen: !state.isLoginModalOpen })),
+    set((state) => ({ isLoginModalOpen: !state.isLoginModalOpen, error: "" })),
   togglePasswordModal: () =>
     set((state) => ({
       isPasswordModalOpen: !state.isPasswordModalOpen,
