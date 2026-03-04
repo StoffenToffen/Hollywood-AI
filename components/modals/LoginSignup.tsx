@@ -2,6 +2,7 @@
 
 import { Modal } from "@mui/material";
 import type { FirebaseError } from "firebase/app";
+import type { UserCredential } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInAnonymously,
@@ -15,6 +16,7 @@ import { useState } from "react";
 import { auth, provider } from "@/firebase";
 import { mapAuthCodeToMessage } from "@/firebaseErrors";
 import { useModalStore } from "@/zustand/modalStore";
+import { useUserStore } from "@/zustand/userStore";
 
 import "./modals.css";
 
@@ -23,58 +25,53 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
 
+  const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const error = useModalStore((state) => state.error);
   const setError = useModalStore((state) => state.setError);
-  const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const togglePasswordModal = useModalStore(
     (state) => state.togglePasswordModal,
   );
+  const signInUser = useUserStore((state) => state.signInUser);
 
   const router = useRouter();
+
+  const handleLogin = async (
+    e: React.SubmitEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+    method?: string,
+  ) => {
+    e.preventDefault();
+    let userCredentials: UserCredential;
+    try {
+      switch (method) {
+        case "guest":
+          userCredentials = await signInAnonymously(auth);
+          break;
+        case "google":
+          userCredentials = await signInWithPopup(auth, provider);
+          break;
+        default:
+          userCredentials = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password,
+          );
+      }
+      if (userCredentials) {
+        signInUser(userCredentials.user);
+        toggleLoginModal();
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError(mapAuthCodeToMessage((err as FirebaseError).code));
+    }
+  };
 
   const signup: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      login(e);
-    } catch (err) {
-      setError(mapAuthCodeToMessage((err as FirebaseError).code));
-    }
-  };
-
-  const login: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-    try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-
-      if (user) {
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError(mapAuthCodeToMessage((err as FirebaseError).code));
-    }
-  };
-
-  const guestLogin = async () => {
-    try {
-      const { user } = await signInAnonymously(auth);
-
-      if (user) {
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError(mapAuthCodeToMessage((err as FirebaseError).code));
-    }
-  };
-
-  const googleLogin = async () => {
-    try {
-      const { user } = await signInWithPopup(auth, provider);
-
-      if (user) {
-        router.push("/dashboard");
-      }
+      handleLogin(e);
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
@@ -104,7 +101,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
-          onClick={googleLogin}
+          onClick={(e) => handleLogin(e, "google")}
         >
           <Image
             width={0}
@@ -121,7 +118,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
-          onClick={guestLogin}
+          onClick={(e) => handleLogin(e, "guest")}
         >
           <UserIcon fill="currentColor" className="modal__login-option__icon" />
 
@@ -139,7 +136,7 @@ const Login = () => {
         <form
           className="modal__form"
           onSubmit={(e) => {
-            isLogin ? login(e) : signup(e);
+            isLogin ? handleLogin(e) : signup(e);
           }}
         >
           <label htmlFor="email" className="modal__form__label">

@@ -1,21 +1,27 @@
 "use client";
 
+import { signOut } from "firebase/auth";
 import {
   Bookmark,
   CircleQuestionMark,
   LayoutDashboard,
   LogIn,
+  LogOut,
   Search,
   Settings,
   TrendingUp,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
+import { useUserStore } from "@/zustand/userStore";
 import ForgotPassword from "../modals/ForgotPassword";
 import Login from "../modals/LoginSignup";
 
 const Nav = () => {
+  const uid = useUserStore((state) => state.uid);
+  const signOutUser = useUserStore((state) => state.signOutUser);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   const closeNav = () => {
@@ -101,17 +107,32 @@ const Nav = () => {
             </Link>
           </li>
           <li>
-            <button
-              type="button"
-              className="side-nav__link"
-              onClick={() => {
-                closeNav();
-                toggleLoginModal();
-              }}
-            >
-              <LogIn className="side-nav__link__icon" />
-              Log in
-            </button>
+            {uid ? (
+              <button
+                type="button"
+                className="side-nav__link"
+                onClick={async () => {
+                  closeNav();
+                  await signOut(auth);
+                  signOutUser();
+                }}
+              >
+                <LogOut className="side-nav__link__icon" />
+                Log out
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="side-nav__link"
+                onClick={() => {
+                  closeNav();
+                  toggleLoginModal();
+                }}
+              >
+                <LogIn className="side-nav__link__icon" />
+                Log in
+              </button>
+            )}
           </li>
         </ul>
       </nav>
