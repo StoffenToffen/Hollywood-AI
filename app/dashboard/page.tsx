@@ -4,7 +4,6 @@ import Search from "@/components/dashboard/Search";
 
 import "swiper/css";
 import "swiper/css/navigation";
-import "../globals.css";
 import "./page.css";
 
 const fetchMovies = async (endpoint: string) => {
@@ -21,6 +20,7 @@ const fetchMovies = async (endpoint: string) => {
     return data.data;
   } catch (err) {
     console.error(err);
+    throw err;
   }
 };
 
