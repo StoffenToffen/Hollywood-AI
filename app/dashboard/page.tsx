@@ -20,6 +20,7 @@ const fetchMovies = async (endpoint: string) => {
     return data.data;
   } catch (err) {
     console.error(err);
+    throw err;
   }
 };
 

@@ -84,7 +84,8 @@ const Login = () => {
 
         signInUser(userCredentials.user);
         toggleLoginModal();
-        pathname === "/" && router.push("/dashboard");
+
+        if (pathname === "/") router.push("/dashboard");
       }
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));

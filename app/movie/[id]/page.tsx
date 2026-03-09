@@ -21,13 +21,14 @@ const fetchMovie = async (id: string) => {
     return data.data;
   } catch (err) {
     console.error(err);
+    throw err;
   }
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const Page = async ({ params }: PageProps) => {

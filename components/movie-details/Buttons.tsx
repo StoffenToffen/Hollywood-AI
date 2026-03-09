@@ -3,7 +3,6 @@
 import {
   arrayRemove,
   arrayUnion,
-  type DocumentData,
   doc,
   getDoc,
   updateDoc,
@@ -21,31 +20,40 @@ interface ButtonsProps {
 }
 
 const Buttons = ({ id }: ButtonsProps) => {
-  const [favourites, setFavourites] = useState([] as DocumentData | undefined);
+  const [favourites, setFavourites] = useState<string[]>([]);
   const uid = useUserStore((state) => state.uid);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   const toggleFavourite = async () => {
-    const favRef = doc(db, "users", uid);
+    try {
+      const favRef = doc(db, "users", uid);
 
-    if (favourites?.includes(id)) {
-      await updateDoc(favRef, {
-        favourites: arrayRemove(id),
-      });
-    } else {
-      await updateDoc(favRef, {
-        favourites: arrayUnion(id),
-      });
+      if (favourites?.includes(id)) {
+        await updateDoc(favRef, {
+          favourites: arrayRemove(id),
+        });
+      } else {
+        await updateDoc(favRef, {
+          favourites: arrayUnion(id),
+        });
+      }
+
+      getFavourites();
+    } catch (err) {
+      console.error("Failed to update favourites:", err);
     }
-
-    getFavourites();
   };
 
   const getFavourites = useCallback(async () => {
     if (uid) {
-      const userRef = doc(db, "users", uid);
-      const userSnap = await getDoc(userRef);
-      setFavourites(userSnap.data()?.favourites);
+      try {
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+        setFavourites(userSnap.data()?.favourites);
+      } catch (err) {
+        console.error("Failed to fetch favourites:", err);
+        setFavourites([]);
+      }
     } else setFavourites([]);
   }, [uid]);
 
