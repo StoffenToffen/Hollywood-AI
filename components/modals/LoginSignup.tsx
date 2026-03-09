@@ -5,15 +5,17 @@ import type { FirebaseError } from "firebase/app";
 import type { UserCredential } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInAnonymously,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, runTransaction } from "firebase/firestore";
 import { UserIcon, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { auth, provider } from "@/firebase";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { auth, db, provider } from "@/firebase";
 import { mapAuthCodeToMessage } from "@/firebaseErrors";
 import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";
@@ -25,6 +27,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const error = useModalStore((state) => state.error);
   const setError = useModalStore((state) => state.setError);
@@ -33,8 +38,6 @@ const Login = () => {
     (state) => state.togglePasswordModal,
   );
   const signInUser = useUserStore((state) => state.signInUser);
-
-  const router = useRouter();
 
   const handleLogin = async (
     e: React.SubmitEvent | React.MouseEvent,
@@ -65,14 +68,38 @@ const Login = () => {
           );
       }
       if (userCredentials) {
+        const newUser = {
+          favourites: [],
+          isSubscribed: false,
+        };
+        const userRef = doc(db, "users", userCredentials.user.uid);
+
+        await runTransaction(db, async (transaction) => {
+          const userSnapshot = await transaction.get(userRef);
+
+          if (!userSnapshot.exists()) {
+            transaction.set(userRef, newUser);
+          }
+        });
+
         signInUser(userCredentials.user);
         toggleLoginModal();
-        router.push("/dashboard");
+        pathname === "/" && router.push("/dashboard");
       }
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) return;
+
+      signInUser(currentUser);
+    });
+
+    return unsubscribe;
+  }, [signInUser]);
 
   return (
     <Modal

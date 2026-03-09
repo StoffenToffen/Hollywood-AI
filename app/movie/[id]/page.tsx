@@ -1,8 +1,9 @@
-import { Bookmark, Calendar, Clock, Mic, Star } from "lucide-react";
+import { Calendar, Clock, Mic, Star } from "lucide-react";
 import Image from "next/image";
 
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
+import Buttons from "@/components/movie-details/Buttons";
 
 import "./page.css";
 
@@ -71,22 +72,7 @@ const Page = async ({ params }: PageProps) => {
               </div>
             </div>
 
-            <button type="button" className="movie-info__summarize-btn">
-              Summarize{" "}
-              <Image
-                width={0}
-                height={0}
-                sizes="100vw"
-                src="/assets/bolt.svg"
-                alt="lightning bolt"
-                className="movie-info__summarize-btn__icon"
-              />
-            </button>
-
-            <button type="button" className="movie-info__favourite-btn">
-              <Bookmark className="movie-info__favourite-btn__icon" /> Add to
-              Favourites
-            </button>
+            <Buttons id={id} />
 
             <h2 className="movie-info__subtitle">What's it about?</h2>
 
