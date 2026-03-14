@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Movie } from "@/zustand/movieStore";
 
 interface AudioPlayerProps {
-  movie: Movie
+  movie: Movie;
 }
 
 const AudioPlayer = ({ movie }: AudioPlayerProps) => {
@@ -108,64 +108,79 @@ const AudioPlayer = ({ movie }: AudioPlayerProps) => {
 
   return (
     <div className="player">
-      <div className="player__info">
-        <Image
-          width={0}
-          height={0}
-          sizes="100vw"
-          className="player__info__poster"
-          src={movie.imageLink}
-          alt={movie.title}
-        />
+      <div className="page-row player__row">
+        <div className="player__info">
+          <Image
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="player__info__poster"
+            src={movie.imageLink}
+            alt={movie.title}
+          />
 
-        <div>
-          <p className="player__info__title">{movie.title}</p>
-          <p className="player__info__director">{movie.director}</p>
+          <div>
+            <p className="player__info__title">{movie.title}</p>
+            <p className="player__info__director">{movie.director}</p>
+          </div>
         </div>
-      </div>
 
-      <div className="player__info__controls">
-        <audio
-          src={`https://advanced-internship-api-production.up.railway.app/${movie.audioLink}`}
-          ref={audioRef}
-          onLoadedMetadata={onLoadedMetadata}
-        />
+        <div className="player__controls">
+          {/** biome-ignore lint/a11y/useMediaCaption: <> */}
+          <audio
+            src={`https://advanced-internship-api-production.up.railway.app/${movie.audioLink}`}
+            ref={audioRef}
+            onLoadedMetadata={onLoadedMetadata}
+          />
 
-        <button
-          type="button"
-          onClick={() => {
-            skipProgress(-10);
-          }}
-        >
-          <RotateCcw size={20} />
-        </button>
+          <button
+            type="button"
+            className="player__controls__skip"
+            onClick={() => {
+              skipProgress(-10);
+            }}
+          >
+            <RotateCcw />
+            <span className="player__controls__skip__text">10</span>
+          </button>
 
-        <button type="button" onClick={() => setIsPlaying((prev) => !prev)}>
-          {isPlaying ? <Pause size={30} /> : <Play size={30} />}
-        </button>
+          <button
+            type="button"
+            className="player__controls__play"
+            onClick={() => setIsPlaying((prev) => !prev)}
+          >
+            {isPlaying ? (
+              <Pause size={20} fill="currentColor" />
+            ) : (
+              <Play size={20} fill="currentColor" />
+            )}
+          </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            skipProgress(10);
-          }}
-        >
-          <RotateCw size={20} />
-        </button>
-      </div>
+          <button
+            type="button"
+            className="player__controls__skip"
+            onClick={() => {
+              skipProgress(10);
+            }}
+          >
+            <RotateCw />
+            <span className="player__controls__skip__text">10</span>
+          </button>
+        </div>
 
-      <div className="progress-bar">
-        <span>{formatTime(timeProgress)}</span>
+        <div className="progress-bar">
+          <span>{formatTime(timeProgress)}</span>
 
-        <input
-          className="progress-bar__slider"
-          type="range"
-          ref={progressBarRef}
-          defaultValue={0}
-          onChange={handleProgressChange}
-        />
+          <input
+            className="progress-bar__slider"
+            type="range"
+            ref={progressBarRef}
+            defaultValue={0}
+            onChange={handleProgressChange}
+          />
 
-        <span>{formatTime(duration)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
       </div>
     </div>
   );
