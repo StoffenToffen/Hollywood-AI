@@ -13,16 +13,19 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { db } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
+import { type Movie, useMovieStore } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";
 
 interface ButtonsProps {
   id: string;
+  movie: Movie;
 }
 
-const Buttons = ({ id }: ButtonsProps) => {
+const Buttons = ({ id, movie }: ButtonsProps) => {
   const [favourites, setFavourites] = useState<string[]>([]);
   const uid = useUserStore((state) => state.uid);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
+  const setMovie = useMovieStore((state) => state.setMovie);
 
   const toggleFavourite = async () => {
     try {
@@ -60,6 +63,10 @@ const Buttons = ({ id }: ButtonsProps) => {
   useEffect(() => {
     getFavourites();
   }, [getFavourites]);
+
+  useEffect(() => {
+    setMovie(movie);
+  }, [setMovie, movie]);
 
   return (
     <>

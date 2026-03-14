@@ -4,23 +4,10 @@ import { Clock, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Movie } from "@/zustand/movieStore";
 
 interface MoviesProps {
-  movies: {
-    id: string;
-    director: string;
-    title: string;
-    tagLine: string;
-    imageLink: string;
-    audioLink: string;
-    rating: string;
-    releaseYear: string;
-    type: string;
-    subscriptionRequired: boolean;
-    summary: string;
-    tags: string[];
-    movieDescription: string;
-  }[];
+  movies: Movie[];
 }
 
 const Movies = ({ movies }: MoviesProps) => {

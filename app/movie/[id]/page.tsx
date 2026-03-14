@@ -73,7 +73,7 @@ const Page = async ({ params }: PageProps) => {
               </div>
             </div>
 
-            <Buttons id={id} />
+            <Buttons id={id} movie={movie} />
 
             <h2 className="movie-info__subtitle">What's it about?</h2>
 
