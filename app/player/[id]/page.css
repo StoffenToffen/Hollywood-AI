@@ -1,3 +1,23 @@
+/* Summary */
+
+.summary__row {
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.summary__title {
+  font-size: 24px;
+  border-bottom: 2px solid #f1f3f4;
+  padding-bottom: 16px;
+}
+
+.summary__text {
+  white-space: pre-line;
+  padding-top: 32px;
+}
+
+/* Player */
+
 .player {
   color: white;
   background-color: #2e2d2d;

@@ -1,11 +1,13 @@
-"use client";
-
 import { Pause, Play, RotateCcw, RotateCw } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useMovieStore } from "@/zustand/movieStore";
+import type { Movie } from "@/zustand/movieStore";
 
-const AudioPlayer = () => {
+interface AudioPlayerProps {
+  movie: Movie
+}
+
+const AudioPlayer = ({ movie }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeProgress, setTimeProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -13,8 +15,6 @@ const AudioPlayer = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const playAnimationRef = useRef<number | null>(null);
   const progressBarRef = useRef<HTMLInputElement>(null);
-
-  const movie = useMovieStore((state) => state.movie);
 
   const onLoadedMetadata = () => {
     const seconds = audioRef.current?.duration;

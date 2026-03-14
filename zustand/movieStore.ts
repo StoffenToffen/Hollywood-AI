@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface Movie {
   id: string;
@@ -17,25 +18,16 @@ export interface Movie {
 }
 
 interface MovieStore {
-  movie: Movie;
+  movie: Movie | null;
   setMovie: (data: Movie) => void;
 }
 
-export const useMovieStore = create<MovieStore>((set) => ({
-  movie: {
-    id: "",
-    director: "",
-    title: "",
-    tagLine: "",
-    imageLink: "",
-    audioLink: "",
-    rating: "",
-    releaseYear: "",
-    type: "",
-    subscriptionRequired: false,
-    summary: "",
-    tags: [],
-    movieDescription: "",
-  },
-  setMovie: (data) => set(() => ({ movie: data })),
-}));
+export const useMovieStore = create<MovieStore>()(
+  persist(
+    (set) => ({
+      movie: null,
+      setMovie: (data) => set(() => ({ movie: data })),
+    }),
+    { name: "movie" },
+  ),
+);

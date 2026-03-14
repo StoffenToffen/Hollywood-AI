@@ -66,6 +66,7 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
 
   useEffect(() => {
     setMovie(movie);
+    // localStorage.setItem("movie", JSON.stringify(movie));
   }, [setMovie, movie]);
 
   return (
