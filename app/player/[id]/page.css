@@ -112,6 +112,11 @@
   max-width: 500px;
 }
 
+.progress-bar__time {
+  font-size: 14px;
+  width: 32px;
+}
+
 .progress-bar__slider {
   --range-progress: 0;
   appearance: none;
@@ -141,6 +146,18 @@
   }
 
   &:hover::-webkit-slider-thumb {
+    background-color: #8acffd;
+  }
+
+  &::-moz-range-thumb {
+    background-color: #2c96dd;
+    height: 8px;
+    width: 8px;
+    border-radius: 100%;
+    border: none;
+  }
+
+  &:hover::-moz-range-thumb {
     background-color: #8acffd;
   }
 }

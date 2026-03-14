@@ -169,7 +169,7 @@ const AudioPlayer = ({ movie }: AudioPlayerProps) => {
         </div>
 
         <div className="progress-bar">
-          <span>{formatTime(timeProgress)}</span>
+          <span className="progress-bar__time">{formatTime(timeProgress)}</span>
 
           <input
             className="progress-bar__slider"
@@ -179,7 +179,7 @@ const AudioPlayer = ({ movie }: AudioPlayerProps) => {
             onChange={handleProgressChange}
           />
 
-          <span>{formatTime(duration)}</span>
+          <span className="progress-bar__time">{formatTime(duration)}</span>
         </div>
       </div>
     </div>

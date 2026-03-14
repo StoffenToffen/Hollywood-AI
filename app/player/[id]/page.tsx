@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import AudioPlayer from "@/components/player/AudioPlayer";
@@ -8,6 +9,7 @@ import { useMovieStore } from "@/zustand/movieStore";
 import "./page.css";
 
 const Page = () => {
+  const { id } = useParams();
   const movie = useMovieStore((state) => state.movie);
 
   return (
@@ -17,7 +19,7 @@ const Page = () => {
       <div className="page-content">
         <Search />
 
-        {movie && (
+        {movie && movie.id === id ? (
           <>
             <div className="page-row summary__row">
               <h1 className="summary__title">{movie.title}</h1>
@@ -27,6 +29,8 @@ const Page = () => {
 
             <AudioPlayer movie={movie} />
           </>
+        ) : (
+          <p>Movie not found. Please select a movie from the dashboard</p>
         )}
       </div>
     </div>
