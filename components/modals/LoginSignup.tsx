@@ -84,6 +84,8 @@ const Login = () => {
 
         signInUser(userCredentials.user);
         toggleLoginModal();
+        setEmail("")
+        setPassword("")
 
         if (pathname === "/") router.push("/dashboard");
       }

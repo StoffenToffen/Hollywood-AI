@@ -1,6 +1,7 @@
 import { Calendar, Clock, Mic, Star } from "lucide-react";
 import Image from "next/image";
 
+import AudioDuration from "@/components/dashboard/AudioDuration";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import Buttons from "@/components/movie-details/Buttons";
@@ -63,7 +64,8 @@ const Page = async ({ params }: PageProps) => {
 
               <div className="movie-info__info__item__wrapper">
                 <div className="movie-info__info__item">
-                  <Clock className="movie-info__info__item__icon" /> 10:00
+                  <Clock className="movie-info__info__item__icon" />{" "}
+                  <AudioDuration audioLink={movie.audioLink} />
                 </div>
 
                 <div className="movie-info__info__item">

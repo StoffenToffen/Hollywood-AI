@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Movie } from "@/zustand/movieStore";
+import AudioDuration from "./AudioDuration";
 
 interface MoviesProps {
   movies: Movie[];
@@ -45,6 +46,7 @@ const Movies = ({ movies }: MoviesProps) => {
               title,
               rating,
               imageLink,
+              audioLink,
             }) => (
               <SwiperSlide key={id}>
                 <Link href={`/movie/${id}`} className="movie">
@@ -67,7 +69,7 @@ const Movies = ({ movies }: MoviesProps) => {
 
                   <div className="movie__details">
                     <Clock className="movie__details__icon" />
-                    <span>10:00</span>
+                    <AudioDuration audioLink={audioLink} />
 
                     <Star className="movie__details__icon" />
                     <span>{rating}</span>

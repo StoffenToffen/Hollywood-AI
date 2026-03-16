@@ -8,16 +8,16 @@ const Header = () => {
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   return (
-    <header>
-      <div className="row header__row">
-        <div className="header__widget">
-          <span className="header__widget__title">Meet HollywoodAI</span>
-          <span className="header__widget__emoji"> ⏺ </span>
-          <span className="header__widget__description">
+    <header className="landing-header">
+      <div className="row landing-header__row">
+        <div className="landing-header__widget">
+          <span className="landing-header__widget__title">Meet HollywoodAI</span>
+          <span className="landing-header__widget__emoji"> ⏺ </span>
+          <span className="landing-header__widget__description">
             Unleash the Power of AI
           </span>
         </div>
-        <h1 className="header__title">
+        <h1 className="landing-header__title">
           Ultimate AI <br />
           Summariser{" "}
           <Image
@@ -26,26 +26,26 @@ const Header = () => {
             sizes="100vw"
             src="/assets/bolt.svg"
             alt="lightning bolt"
-            className="header__title__icon"
+            className="landing-header__title__icon"
           />
         </h1>
-        <p className="header__paragraph">
+        <p className="landing-header__paragraph">
           All-in-one platform to watch your favourite movies in minutes using
           AI.
         </p>
         <button
           type="button"
-          className="header__button"
+          className="landing-header__button"
           onClick={toggleLoginModal}
         >
-          <div className="header__button__iconWrapper">
-            <Play fill="currentColor" className="header__button__icon" />
+          <div className="landing-header__button__iconWrapper">
+            <Play fill="currentColor" className="landing-header__button__icon" />
           </div>
-          <span className="header__button__text">See how it works &nbsp;</span>
+          <span className="landing-header__button__text">See how it works &nbsp;</span>
         </button>
       </div>
       <svg
-        className="header__svg"
+        className="landing-header__svg"
         width="1440"
         height="105"
         viewBox="0 0 1440 105"
