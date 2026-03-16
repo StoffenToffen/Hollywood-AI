@@ -8,7 +8,7 @@ const Nav = () => {
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   return (
-    <nav>
+    <nav className="landing-nav">
       <Link href="#">
         <Image
           width={0}
@@ -16,24 +16,24 @@ const Nav = () => {
           sizes="100vw"
           src="/assets/logo-dark.png"
           alt="logo"
-          className="nav__logo"
+          className="landing-nav__logo"
         />
       </Link>
-      <div className="nav__links">
-        <Link href="#summary" className="nav__link">
+      <div className="landing-nav__links">
+        <Link href="#summary" className="landing-nav__link">
           About
         </Link>
-        <Link href="#features" className="nav__link">
+        <Link href="#features" className="landing-nav__link">
           Features
         </Link>
-        <Link href="#steps" className="nav__link">
+        <Link href="#steps" className="landing-nav__link">
           How it works
         </Link>
-        <Link href="#testimonials" className="nav__link">
+        <Link href="#testimonials" className="landing-nav__link">
           Testimonials
         </Link>
       </div>
-      <button type="button" className="nav__button" onClick={toggleLoginModal}>
+      <button type="button" className="landing-nav__button" onClick={toggleLoginModal}>
         Sign In
       </button>
     </nav>
