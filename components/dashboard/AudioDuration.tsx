@@ -32,7 +32,7 @@ const AudioDuration = ({ audioLink }: AudioDurationProps) => {
 
     audio.addEventListener("loadedmetadata", () => {
       setDuration(audio.duration);
-    });
+    }, { once: true });
   }, [audioLink]);
 
   return <span>{formatTime(duration)}</span>;
