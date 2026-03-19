@@ -1,0 +1,129 @@
+.plans__title {
+  margin: 16px 0;
+}
+
+.plans__cards {
+  display: flex;
+  gap: 12px;
+}
+
+.plans__card {
+  width: 50%;
+  border-radius: 20px;
+  border: 1px solid #f1f3f4;
+  padding: 24px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+.plans__card__price {
+  display: flex;
+}
+
+.plans__card__price__currency {
+  margin-right: 4px;
+}
+
+.plans__card__price__amount {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.plans__card__price__duration {
+  margin-top: 8px;
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.plans__card__title {
+  opacity: 0.6;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.plans__card__perks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.plans__card__perk {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.plans__card__perk__icon {
+  color: #3d0380;
+  background-color: #f7f0ff;
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  padding: 2px;
+}
+
+.plans__card__btn {
+  background-color: #320580;
+  color: #fff;
+  width: 100%;
+  margin-top: 80px;
+  border-radius: 99px;
+  padding: 12px 0;
+  font-weight: 500;
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #4f46e5;
+  }
+}
+
+/* Accordions */
+
+.faq__row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding-bottom: 40px;
+}
+
+.faq__accordion {
+  border-radius: 20px;
+  border: 1px solid #f1f3f4;
+  padding: 16px 16px;
+}
+
+.faq__accordion__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.faq__accordion__title__icon {
+  transition: 0.3s;
+}
+
+.rotated {
+  transform: rotate(45deg);
+}
+
+.faq__accordion__text__wrapper {
+  interpolate-size: allow-keywords;
+  max-height: 0;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.expanded {
+  max-height: fit-content;
+}
+
+.faq__accordion__text {
+  opacity: 0.6;
+  text-align: start;
+  font-size: 14px;
+}
