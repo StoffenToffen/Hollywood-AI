@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@icons-pack/react-simple-icons": "^13.11.1",
+    "@invertase/firestore-stripe-payments": "^0.0.8",
     "@mui/material": "^7.3.8",
     "firebase": "^12.9.0",
     "lucide-react": "^0.575.0",
