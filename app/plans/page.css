@@ -81,6 +81,10 @@
   }
 }
 
+.disabled {
+  opacity: 0.6;
+}
+
 /* Accordions */
 
 .faq__row {

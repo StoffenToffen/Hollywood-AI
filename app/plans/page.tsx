@@ -13,14 +13,16 @@ import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import Accordions from "@/components/plans/accordions";
 import { app } from "@/firebase";
+import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";
 
 import "./page.css";
 
 const Page = () => {
   const [subscription, setSubscription] = useState<Product>();
-  const [isSubscribed, setIsSubscribed] = useState<string>("");
-  const uid = useUserStore((state) => state.uid);
+  const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(false);
+  const email = useUserStore((state) => state.email);
+  const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const payments = getStripePayments(app, {
     productsCollection: "products",
     customersCollection: "customers",
@@ -29,7 +31,7 @@ const Page = () => {
   const upgradeSubscription = async (priceId: string) => {
     const session = await createCheckoutSession(payments, {
       price: priceId,
-      success_url: "http://localhost:3000/dashboard"
+      success_url: "http://localhost:3000/dashboard",
     });
     window.location.assign(session.url);
   };
@@ -46,16 +48,23 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    if (uid) {
+    setIsUserSubscribed(false);
+
+    if (email && subscription) {
       const checkIfSubscribed = async () => {
         const userSubscriptions = await getCurrentUserSubscriptions(payments, {
           status: "active",
         });
-        setIsSubscribed(userSubscriptions[0].id);
+        userSubscriptions.forEach((userSubscription) => {
+          userSubscription.price === subscription.prices[0].id &&
+            setIsUserSubscribed(true);
+          userSubscription.price === subscription.prices[1].id &&
+            setIsUserSubscribed(true);
+        });
       };
       checkIfSubscribed();
     }
-  }, [uid]);
+  }, [email, subscription]);
 
   return (
     <div className="page-wrapper">
@@ -83,7 +92,7 @@ const Page = () => {
                 <div className="plans__card__price">
                   <span className="plans__card__price__currency">$</span>
                   <span className="plans__card__price__amount">
-                    {subscription.prices[0].unit_amount / 100}
+                    {subscription?.prices[0].unit_amount / 100}
                   </span>
                   <span className="plans__card__price__duration">Monthly</span>
                 </div>
@@ -109,22 +118,34 @@ const Page = () => {
                   </li>
                 </ul>
 
-                <button
-                  type="button"
-                  className="plans__card__btn"
-                  onClick={() =>
-                    upgradeSubscription("price_1TC44A2ardwz0A4KlRHWix44")
-                  }
-                >
-                  Choose plan
-                </button>
+                {isUserSubscribed ? (
+                  <button
+                    type="button"
+                    className="plans__card__btn disabled"
+                    disabled={true}
+                  >
+                    Already Subscribed
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="plans__card__btn"
+                    onClick={() => {
+                      email
+                        ? upgradeSubscription("price_1TC44A2ardwz0A4KlRHWix44")
+                        : toggleLoginModal();
+                    }}
+                  >
+                    Choose plan
+                  </button>
+                )}
               </div>
 
               <div className="plans__card">
                 <div className="plans__card__price">
                   <span className="plans__card__price__currency">$</span>
                   <span className="plans__card__price__amount">
-                    {subscription.prices[1].unit_amount / 100}
+                    {subscription?.prices[1].unit_amount / 100}
                   </span>
                   <span className="plans__card__price__duration">Yearly</span>
                 </div>
@@ -153,15 +174,27 @@ const Page = () => {
                   </li>
                 </ul>
 
-                <button
-                  type="button"
-                  className="plans__card__btn"
-                  onClick={() =>
-                    upgradeSubscription("price_1TC4AY2ardwz0A4K7Rdz9QwB")
-                  }
-                >
-                  Choose plan
-                </button>
+                {isUserSubscribed ? (
+                  <button
+                    type="button"
+                    className="plans__card__btn disabled"
+                    disabled={true}
+                  >
+                    Already Subscribed
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="plans__card__btn"
+                    onClick={() => {
+                      email
+                        ? upgradeSubscription("price_1TC4AY2ardwz0A4K7Rdz9QwB")
+                        : toggleLoginModal();
+                    }}
+                  >
+                    Choose plan
+                  </button>
+                )}
               </div>
             </div>
           </div>
