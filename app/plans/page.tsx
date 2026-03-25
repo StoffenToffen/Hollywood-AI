@@ -28,21 +28,30 @@ const Page = () => {
   });
 
   const upgradeSubscription = async (priceId: string) => {
-    const session = await createCheckoutSession(payments, {
-      price: priceId,
-      success_url: "http://localhost:3000/dashboard",
-    });
-    window.location.assign(session.url);
+    try {
+      const session = await createCheckoutSession(payments, {
+        price: priceId,
+        success_url: `${window.location.origin}/dashboard`,
+      });
+
+      if (session.url) window.location.assign(session.url);
+    } catch (err) {
+      console.error(`Checkout failed: ${err}`);
+    }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     (async () => {
-      const products = await getProducts(payments, {
-        includePrices: true,
-        activeOnly: true,
-      });
-      setSubscription(products[0]);
+      try {
+        const products = await getProducts(payments, {
+          includePrices: true,
+          activeOnly: true,
+        });
+        setSubscription(products[0]);
+      } catch (err) {
+        console.error(`Failed to load subscription plans: ${err}`);
+      }
     })();
   }, []);
 
@@ -112,7 +121,7 @@ const Page = () => {
                     className="plans__card__btn"
                     onClick={() => {
                       email
-                        ? upgradeSubscription("price_1TC44A2ardwz0A4KlRHWix44")
+                        ? upgradeSubscription(subscription?.prices[0].id ?? "")
                         : toggleLoginModal();
                     }}
                   >
@@ -126,6 +135,7 @@ const Page = () => {
                   <span className="plans__card__price__currency">$</span>
                   <span className="plans__card__price__amount">
                     {subscription?.prices[1].unit_amount / 100}
+                    {".00"}
                   </span>
                   <span className="plans__card__price__duration">Yearly</span>
                 </div>
@@ -168,7 +178,7 @@ const Page = () => {
                     className="plans__card__btn"
                     onClick={() => {
                       email
-                        ? upgradeSubscription("price_1TC4AY2ardwz0A4K7Rdz9QwB")
+                        ? upgradeSubscription(subscription?.prices[1].id ?? "")
                         : toggleLoginModal();
                     }}
                   >

@@ -1,16 +1,25 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import AudioPlayer from "@/components/player/AudioPlayer";
 import { useMovieStore } from "@/zustand/movieStore";
+import { useUserStore } from "@/zustand/userStore";
 
 import "./page.css";
 
 const Page = () => {
   const { id } = useParams();
   const movie = useMovieStore((state) => state.movie);
+  const isSubscribed = useUserStore((state) => state.isSubscribed);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (movie?.subscriptionRequired && !isSubscribed) router.push("/plans");
+  }, [isSubscribed, movie, router]);
 
   return (
     <div className="page-wrapper">
