@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Movie } from "@/zustand/movieStore";
+import { useUserStore } from "@/zustand/userStore";
 import AudioDuration from "./AudioDuration";
 
 interface MoviesProps {
@@ -12,6 +13,8 @@ interface MoviesProps {
 }
 
 const Movies = ({ movies }: MoviesProps) => {
+  const isSubscribed = useUserStore((state) => state.isSubscribed);
+
   const swiperSettings = {
     spaceBetween: 20,
     slidesPerView: 2.3,
@@ -50,7 +53,7 @@ const Movies = ({ movies }: MoviesProps) => {
             }) => (
               <SwiperSlide key={id}>
                 <Link href={`/movie/${id}`} className="movie">
-                  {subscriptionRequired && (
+                  {subscriptionRequired && !isSubscribed && (
                     <span className="movie__pill">Premium</span>
                   )}
 

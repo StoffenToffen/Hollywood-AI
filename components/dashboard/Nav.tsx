@@ -22,6 +22,7 @@ import Login from "../modals/LoginSignup";
 const Nav = () => {
   const uid = useUserStore((state) => state.uid);
   const signOutUser = useUserStore((state) => state.signOutUser);
+  const setIsSubscribed = useUserStore((state) => state.setIsSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   const closeNav = () => {
@@ -32,6 +33,7 @@ const Nav = () => {
     try {
       await signOut(auth);
       signOutUser();
+      setIsSubscribed(false);
     } catch (err) {
       console.error(err);
     }
