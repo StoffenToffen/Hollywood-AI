@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  getCurrentUserSubscriptions,
+  getProducts,
+  getStripePayments,
+  type Product,
+} from "@invertase/firestore-stripe-payments";
 import { Modal } from "@mui/material";
 import type { FirebaseError } from "firebase/app";
 import type { UserCredential } from "firebase/auth";
@@ -14,8 +20,8 @@ import { doc, runTransaction } from "firebase/firestore";
 import { UserIcon, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { auth, db, provider } from "@/firebase";
+import { useCallback, useEffect, useState } from "react";
+import { app, auth, db, provider } from "@/firebase";
 import { mapAuthCodeToMessage } from "@/firebaseErrors";
 import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";
@@ -26,10 +32,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const [subscription, setSubscription] = useState<Product>();
 
   const router = useRouter();
   const pathname = usePathname();
 
+  const setIsSubscribed = useUserStore((state) => state.setIsSubscribed);
+  const signInUser = useUserStore((state) => state.signInUser);
   const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const error = useModalStore((state) => state.error);
   const setError = useModalStore((state) => state.setError);
@@ -37,7 +46,11 @@ const Login = () => {
   const togglePasswordModal = useModalStore(
     (state) => state.togglePasswordModal,
   );
-  const signInUser = useUserStore((state) => state.signInUser);
+
+  const payments = getStripePayments(app, {
+    productsCollection: "products",
+    customersCollection: "customers",
+  });
 
   const handleLogin = async (
     e: React.SubmitEvent | React.MouseEvent,
@@ -68,10 +81,7 @@ const Login = () => {
           );
       }
       if (userCredentials) {
-        const newUser = {
-          favourites: [],
-          isSubscribed: false,
-        };
+        const newUser = { favourites: [] };
         const userRef = doc(db, "users", userCredentials.user.uid);
 
         await runTransaction(db, async (transaction) => {
@@ -84,8 +94,8 @@ const Login = () => {
 
         signInUser(userCredentials.user);
         toggleLoginModal();
-        setEmail("")
-        setPassword("")
+        setEmail("");
+        setPassword("");
 
         if (pathname === "/") router.push("/dashboard");
       }
@@ -94,15 +104,46 @@ const Login = () => {
     }
   };
 
+  const checkIfSubscribed = useCallback(async () => {
+    const userSubscriptions = await getCurrentUserSubscriptions(payments, {
+      status: "active",
+    });
+
+    userSubscriptions.forEach((userSubscription) => {
+      if (
+        userSubscription.price === subscription?.prices[0].id ||
+        userSubscription.price === subscription?.prices[1].id
+      ) {
+        setIsSubscribed(true);
+      }
+    });
+  }, [setIsSubscribed, payments, subscription]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) return;
 
       signInUser(currentUser);
+
+      if (!subscription) return;
+
+      checkIfSubscribed();
     });
 
     return unsubscribe;
-  }, [signInUser]);
+  }, [signInUser, checkIfSubscribed, subscription]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useEffect(() => {
+    const getSubscriptions = async () => {
+      const products = await getProducts(payments, {
+        includePrices: true,
+        activeOnly: true,
+      });
+      setSubscription(products[0]);
+    };
+    getSubscriptions();
+  }, []);
 
   return (
     <Modal

@@ -2,7 +2,6 @@
 
 import {
   createCheckoutSession,
-  getCurrentUserSubscriptions,
   getProducts,
   getStripePayments,
   type Product,
@@ -20,8 +19,8 @@ import "./page.css";
 
 const Page = () => {
   const [subscription, setSubscription] = useState<Product>();
-  const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(false);
   const email = useUserStore((state) => state.email);
+  const isSubscribed = useUserStore((state) => state.isSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const payments = getStripePayments(app, {
     productsCollection: "products",
@@ -36,35 +35,16 @@ const Page = () => {
     window.location.assign(session.url);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
-    const getSubscriptions = async () => {
+    (async () => {
       const products = await getProducts(payments, {
         includePrices: true,
         activeOnly: true,
       });
       setSubscription(products[0]);
-    };
-    getSubscriptions();
+    })();
   }, []);
-
-  useEffect(() => {
-    setIsUserSubscribed(false);
-
-    if (email && subscription) {
-      const checkIfSubscribed = async () => {
-        const userSubscriptions = await getCurrentUserSubscriptions(payments, {
-          status: "active",
-        });
-        userSubscriptions.forEach((userSubscription) => {
-          userSubscription.price === subscription.prices[0].id &&
-            setIsUserSubscribed(true);
-          userSubscription.price === subscription.prices[1].id &&
-            setIsUserSubscribed(true);
-        });
-      };
-      checkIfSubscribed();
-    }
-  }, [email, subscription]);
 
   return (
     <div className="page-wrapper">
@@ -118,7 +98,7 @@ const Page = () => {
                   </li>
                 </ul>
 
-                {isUserSubscribed ? (
+                {isSubscribed ? (
                   <button
                     type="button"
                     className="plans__card__btn disabled"
@@ -174,7 +154,7 @@ const Page = () => {
                   </li>
                 </ul>
 
-                {isUserSubscribed ? (
+                {isSubscribed ? (
                   <button
                     type="button"
                     className="plans__card__btn disabled"

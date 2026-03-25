@@ -45,7 +45,9 @@ const Page = async ({ params }: PageProps) => {
 
         <div className="page-row movie-info__row">
           <section className="movie-info">
-            <h1 className="movie-info__title">{movie.title}</h1>
+            <h1 className="movie-info__title">
+              {movie.title} {movie.subscriptionRequired && "(Premium)"}
+            </h1>
 
             <span className="movie-info__director">{movie.director}</span>
 

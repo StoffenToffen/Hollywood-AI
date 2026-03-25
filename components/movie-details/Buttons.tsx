@@ -24,6 +24,7 @@ interface ButtonsProps {
 const Buttons = ({ id, movie }: ButtonsProps) => {
   const [favourites, setFavourites] = useState<string[]>([]);
   const uid = useUserStore((state) => state.uid);
+  const isSubscribed = useUserStore((state) => state.isSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const setMovie = useMovieStore((state) => state.setMovie);
 
@@ -71,7 +72,14 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
   return (
     <>
       {uid ? (
-        <Link href={`/player/${id}`} className="movie-info__summarize-btn">
+        <Link
+          href={
+            movie.subscriptionRequired && !isSubscribed
+              ? "/plans"
+              : `/player/${id}`
+          }
+          className="movie-info__summarize-btn"
+        >
           Summarize{" "}
           <Image
             width={0}
