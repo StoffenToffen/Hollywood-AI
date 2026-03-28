@@ -110,7 +110,7 @@ const Page = () => {
                 {isSubscribed ? (
                   <button
                     type="button"
-                    className="plans__card__btn disabled"
+                    className="plans__card__btn plans__btn--disabled"
                     disabled={true}
                   >
                     Already Subscribed
@@ -167,7 +167,7 @@ const Page = () => {
                 {isSubscribed ? (
                   <button
                     type="button"
-                    className="plans__card__btn disabled"
+                    className="plans__card__btn plans__btn--disabled"
                     disabled={true}
                   >
                     Already Subscribed

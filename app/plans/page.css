@@ -81,7 +81,7 @@
   }
 }
 
-.disabled {
+.plans__btn--disabled {
   opacity: 0.6;
 
   &:hover {
