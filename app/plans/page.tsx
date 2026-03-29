@@ -77,115 +77,68 @@ const Page = () => {
             <h2 className="plans__title">Subscription Plans:</h2>
 
             <div className="plans__cards">
-              <div className="plans__card">
-                <div className="plans__card__price">
-                  <span className="plans__card__price__currency">$</span>
-                  <span className="plans__card__price__amount">
-                    {subscription?.prices[0].unit_amount / 100}
-                  </span>
-                  <span className="plans__card__price__duration">Monthly</span>
+              {subscription?.prices.map((price, i) => (
+                <div key={price.id} className="plans__card">
+                  <div className="plans__card__price">
+                    <span className="plans__card__price__currency">$</span>
+                    <span className="plans__card__price__amount">
+                      {(price.unit_amount / 100).toFixed(2)}
+                    </span>
+                    <span className="plans__card__price__duration">
+                      {`${price.interval[0].toUpperCase()}${price.interval?.slice(1)}ly`}
+                    </span>
+                  </div>
+
+                  <h3 className="plans__card__title">Premium</h3>
+
+                  <ul className="plans__card__perks">
+                    {i === 1 && (
+                      <li className="plans__card__perk">
+                        <Check className="plans__card__perk__icon" /> 2 Free
+                        Months
+                      </li>
+                    )}
+                    <li className="plans__card__perk">
+                      <Check className="plans__card__perk__icon" /> Access 100+
+                      Summaries
+                    </li>
+                    <li className="plans__card__perk">
+                      <Check className="plans__card__perk__icon" /> Higher
+                      Quality Audio
+                    </li>
+                    <li className="plans__card__perk">
+                      <Check className="plans__card__perk__icon" /> License For
+                      Commercial Use
+                    </li>
+                    <li className="plans__card__perk">
+                      <Check className="plans__card__perk__icon" /> 3 Supported
+                      Devices
+                    </li>
+                  </ul>
+
+                  {isSubscribed ? (
+                    <button
+                      type="button"
+                      className="plans__card__btn plans__btn--disabled"
+                      disabled={true}
+                    >
+                      Already Subscribed
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="plans__card__btn"
+                      onClick={() => {
+                        email
+                          ? upgradeSubscription(price.id ?? "")
+                          : toggleLoginModal();
+                      }}
+                    >
+                      Choose plan
+                    </button>
+                  )}
                 </div>
-
-                <h3 className="plans__card__title">Premium</h3>
-
-                <ul className="plans__card__perks">
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> Access 100+
-                    Summaries
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> Higher Quality
-                    Audio
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> License For
-                    Commercial Use
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> 3 Supported
-                    Devices
-                  </li>
-                </ul>
-
-                {isSubscribed ? (
-                  <button
-                    type="button"
-                    className="plans__card__btn plans__btn--disabled"
-                    disabled={true}
-                  >
-                    Already Subscribed
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="plans__card__btn"
-                    onClick={() => {
-                      email
-                        ? upgradeSubscription(subscription?.prices[0].id ?? "")
-                        : toggleLoginModal();
-                    }}
-                  >
-                    Choose plan
-                  </button>
-                )}
-              </div>
-
-              <div className="plans__card">
-                <div className="plans__card__price">
-                  <span className="plans__card__price__currency">$</span>
-                  <span className="plans__card__price__amount">
-                    {subscription?.prices[1].unit_amount / 100}
-                    {".00"}
-                  </span>
-                  <span className="plans__card__price__duration">Yearly</span>
-                </div>
-
-                <h3 className="plans__card__title">Premium</h3>
-
-                <ul className="plans__card__perks">
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> 2 Free Months
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> Access 100+
-                    Summaries
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> Higher Quality
-                    Audio
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> License For
-                    Commercial Use
-                  </li>
-                  <li className="plans__card__perk">
-                    <Check className="plans__card__perk__icon" /> 3 Supported
-                    Devices
-                  </li>
-                </ul>
-
-                {isSubscribed ? (
-                  <button
-                    type="button"
-                    className="plans__card__btn plans__btn--disabled"
-                    disabled={true}
-                  >
-                    Already Subscribed
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="plans__card__btn"
-                    onClick={() => {
-                      email
-                        ? upgradeSubscription(subscription?.prices[1].id ?? "")
-                        : toggleLoginModal();
-                    }}
-                  >
-                    Choose plan
-                  </button>
-                )}
-              </div>
+              ))}
             </div>
           </div>
         </section>
