@@ -17,15 +17,16 @@ import { useUserStore } from "@/zustand/userStore";
 
 import "./page.css";
 
+const payments = getStripePayments(app, {
+  productsCollection: "products",
+  customersCollection: "customers",
+});
+
 const Page = () => {
   const [subscription, setSubscription] = useState<Product>();
   const email = useUserStore((state) => state.email);
   const isSubscribed = useUserStore((state) => state.isSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
-  const payments = getStripePayments(app, {
-    productsCollection: "products",
-    customersCollection: "customers",
-  });
 
   const upgradeSubscription = async (priceId: string) => {
     try {
@@ -40,7 +41,6 @@ const Page = () => {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     (async () => {
       try {
@@ -77,7 +77,7 @@ const Page = () => {
             <h2 className="plans__title">Subscription Plans:</h2>
 
             <div className="plans__cards">
-              {subscription?.prices.map((price, i) => (
+              {subscription?.prices.map((price) => (
                 <div key={price.id} className="plans__card">
                   <div className="plans__card__price">
                     <span className="plans__card__price__currency">$</span>
@@ -92,7 +92,7 @@ const Page = () => {
                   <h3 className="plans__card__title">Premium</h3>
 
                   <ul className="plans__card__perks">
-                    {i === 1 && (
+                    {price.interval === "year" && (
                       <li className="plans__card__perk">
                         <Check className="plans__card__perk__icon" /> 2 Free
                         Months
@@ -130,7 +130,7 @@ const Page = () => {
                       className="plans__card__btn"
                       onClick={() => {
                         email
-                          ? upgradeSubscription(price.id ?? "")
+                          ? upgradeSubscription(price.id)
                           : toggleLoginModal();
                       }}
                     >

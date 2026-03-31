@@ -18,6 +18,11 @@ import { useUserStore } from "@/zustand/userStore";
 
 import "./page.css";
 
+const payments = getStripePayments(app, {
+  productsCollection: "products",
+  customersCollection: "customers",
+});
+
 const Page = () => {
   const [subscriptionInfo, setSubscriptionInfo] = useState<Subscription>();
   const [subscription, setSubscription] = useState<Product>();
@@ -26,11 +31,6 @@ const Page = () => {
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const email = useUserStore((state) => state.email);
   const isSubscribed = useUserStore((state) => state.isSubscribed);
-
-  const payments = getStripePayments(app, {
-    productsCollection: "products",
-    customersCollection: "customers",
-  });
 
   useEffect(() => {
     (async () => {
@@ -41,15 +41,14 @@ const Page = () => {
 
         setSubscriptionInfo(userSubscriptions[0]);
 
-        userSubscriptions[0].price === subscription?.prices[0].id &&
-          setSubscriptionPrice(subscription.prices[0].unit_amount);
-        userSubscriptions[0].price === subscription?.prices[1].id &&
-          setSubscriptionPrice(subscription.prices[1].unit_amount);
+        subscription?.prices.forEach((price) => {
+          if (userSubscriptions[0].price === price.id)
+            setSubscriptionPrice(price.unit_amount);
+        });
       }
     })();
-  }, [payments, email, subscription]);
+  }, [email, subscription]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     (async () => {
       try {
@@ -116,7 +115,16 @@ const Page = () => {
 
                       <span className="settings__info__text">
                         <strong>Next Charge: </strong>
-                        {subscriptionInfo?.current_period_end.slice(0, -13)}
+                        <time dateTime={subscriptionInfo?.current_period_end}>
+                          {new Date(
+                            subscriptionInfo?.current_period_end,
+                          ).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </time>
                       </span>
 
                       <span className="settings__info__text">

@@ -28,6 +28,11 @@ import { useUserStore } from "@/zustand/userStore";
 
 import "./modals.css";
 
+const payments = getStripePayments(app, {
+  productsCollection: "products",
+  customersCollection: "customers",
+});
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,11 +51,6 @@ const Login = () => {
   const togglePasswordModal = useModalStore(
     (state) => state.togglePasswordModal,
   );
-
-  const payments = getStripePayments(app, {
-    productsCollection: "products",
-    customersCollection: "customers",
-  });
 
   const handleLogin = async (
     e: React.SubmitEvent | React.MouseEvent,
@@ -109,15 +109,10 @@ const Login = () => {
       status: "active",
     });
 
-    userSubscriptions.forEach((userSubscription) => {
-      if (
-        userSubscription.price === subscription?.prices[0].id ||
-        userSubscription.price === subscription?.prices[1].id
-      ) {
-        setIsSubscribed(true);
-      }
+    subscription?.prices.forEach((price) => {
+      if (userSubscriptions[0].price === price.id) setIsSubscribed(true);
     });
-  }, [setIsSubscribed, payments, subscription]);
+  }, [setIsSubscribed, subscription]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -133,7 +128,6 @@ const Login = () => {
     return unsubscribe;
   }, [signInUser, checkIfSubscribed, subscription]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     const getSubscriptions = async () => {
       const products = await getProducts(payments, {
