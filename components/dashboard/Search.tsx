@@ -15,23 +15,27 @@ const Search = () => {
   const debounceSearch = useDebounce(searchInput, 300);
 
   useEffect(() => {
+    if (!debounceSearch.trim()) {
+      setSeachResults([]);
+      return;
+    }
+
     (async (): Promise<void> => {
-      if (debounceSearch) {
-        try {
-          setSeachResults([]);
-          const response = await fetch(
-            `https://advanced-internship-api-production.up.railway.app/movies?search=${debounceSearch}`,
-          );
+      try {
+        setSeachResults([]);
 
-          if (!response.ok) {
-            throw new Error(`Failed to fetch movies: ${response.status}`);
-          }
+        const response = await fetch(
+          `https://advanced-internship-api-production.up.railway.app/movies?search=${debounceSearch}`,
+        );
 
-          const { data } = await response.json();
-          setSeachResults(data);
-        } catch (err) {
-          console.error(err);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch movies: ${response.status}`);
         }
+
+        const { data } = await response.json();
+        setSeachResults(data);
+      } catch (err) {
+        console.error(err);
       }
     })();
   }, [debounceSearch]);
