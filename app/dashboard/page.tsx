@@ -1,33 +1,17 @@
 import Movies from "@/components/dashboard/Movies";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
+import type { Movie } from "@/zustand/movieStore";
+import { fetchData } from "../fetches";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "./page.css";
 
-const fetchMovies = async (endpoint: string) => {
-  try {
-    const response = await fetch(
-      `https://advanced-internship-api-production.up.railway.app/${endpoint}`,
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${endpoint}: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
 const Page = async () => {
   const [selectedMovies, topMovies] = await Promise.all([
-    fetchMovies("selectedMovies"),
-    fetchMovies("topMovies"),
+    fetchData<Movie[]>("selectedMovies"),
+    fetchData<Movie[]>("topMovies"),
   ]);
 
   return (

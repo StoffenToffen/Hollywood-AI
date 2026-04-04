@@ -1,30 +1,14 @@
 import { Calendar, Clock, Mic, Star } from "lucide-react";
 import Image from "next/image";
 
+import { fetchData } from "@/app/fetches";
 import AudioDuration from "@/components/dashboard/AudioDuration";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import Buttons from "@/components/movie-details/Buttons";
+import type { Movie } from "@/zustand/movieStore";
 
 import "./page.css";
-
-const fetchMovie = async (id: string) => {
-  try {
-    const response = await fetch(
-      `https://advanced-internship-api-production.up.railway.app/Movies/${id}`,
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch movie: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
 
 interface PageProps {
   params: Promise<{
@@ -34,7 +18,7 @@ interface PageProps {
 
 const Page = async ({ params }: PageProps) => {
   const { id } = await params;
-  const movie = await fetchMovie(id);
+  const movie = await fetchData<Movie>("Movies", id);
 
   return (
     <div className="page-wrapper">

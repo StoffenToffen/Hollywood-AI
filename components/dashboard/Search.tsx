@@ -4,6 +4,7 @@ import { Clock, Menu, SearchIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchData } from "@/app/fetches";
 import { useDebounce } from "@/app/hooks";
 import type { Movie } from "@/zustand/movieStore";
 import AudioDuration from "./AudioDuration";
@@ -21,22 +22,11 @@ const Search = () => {
     }
 
     (async (): Promise<void> => {
-      try {
-        setSeachResults([]);
+      const fetchedData = await fetchData<Movie[]>(
+        `movies?search=${debounceSearch}`,
+      );
 
-        const response = await fetch(
-          `https://advanced-internship-api-production.up.railway.app/movies?search=${debounceSearch}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch movies: ${response.status}`);
-        }
-
-        const { data } = await response.json();
-        setSeachResults(data);
-      } catch (err) {
-        console.error(err);
-      }
+      setSeachResults(fetchedData);
     })();
   }, [debounceSearch]);
 

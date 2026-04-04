@@ -9,12 +9,13 @@ import AudioDuration from "@/components/dashboard/AudioDuration";
 import Nav from "@/components/dashboard/Nav";
 import Search from "@/components/dashboard/Search";
 import { db } from "@/firebase";
+import { useModalStore } from "@/zustand/modalStore";
 import type { Movie } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";
+import { fetchData } from "../fetches";
 
 import "./page.css";
 import "../dashboard/page.css";
-import { useModalStore } from "@/zustand/modalStore";
 
 const Page = () => {
   const [favourites, setFavourites] = useState<string[]>([]);
@@ -51,20 +52,13 @@ const Page = () => {
     }
 
     (async () => {
-      try {
-        const promises = favourites.map((favourite) =>
-          fetch(
-            `https://advanced-internship-api-production.up.railway.app/Movies/${favourite}`,
-          ).then((response) => response.json()),
-        );
+      const promises = favourites.map((favourite) =>
+        fetchData<Movie>("Movies", favourite),
+      );
 
-        const data = await Promise.all(promises);
+      const fetchedData = await Promise.all(promises);
 
-        setFavouriteMovies(data.map((item) => item.data));
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
+      setFavouriteMovies(fetchedData);
     })();
   }, [favourites]);
 
