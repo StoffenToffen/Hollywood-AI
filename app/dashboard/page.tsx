@@ -1,4 +1,4 @@
-import Movies from "@/components/dashboard/Movies";
+import MovieCarousel from "@/components/dashboard/MovieCarousel";
 import Nav from "@/components/global/Nav";
 import Search from "@/components/global/Search";
 import type { Movie } from "@/zustand/movieStore";
@@ -38,7 +38,7 @@ const Page = async () => {
 
             <span className="movies__subtext">We think you'll like these.</span>
 
-            <Movies movies={selectedMovies} />
+            <MovieCarousel movies={selectedMovies} />
           </div>
         </section>
 
@@ -50,7 +50,7 @@ const Page = async () => {
               Enjoy our highest rated films.
             </span>
 
-            <Movies movies={topMovies} />
+            <MovieCarousel movies={topMovies} />
           </div>
         </section>
       </div>

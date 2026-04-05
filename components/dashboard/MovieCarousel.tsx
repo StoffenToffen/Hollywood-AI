@@ -4,11 +4,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Movie } from "@/zustand/movieStore";
 import MovieCard from "../global/MovieCard";
 
-interface MoviesProps {
+interface MovieCarouselProps {
   movies: Movie[];
 }
 
-const Movies = ({ movies }: MoviesProps) => {
+const MovieCarousel = ({ movies }: MovieCarouselProps) => {
   const swiperSettings = {
     spaceBetween: 20,
     slidesPerView: 2.3,
@@ -45,4 +45,4 @@ const Movies = ({ movies }: MoviesProps) => {
   );
 };
 
-export default Movies;
+export default MovieCarousel;
