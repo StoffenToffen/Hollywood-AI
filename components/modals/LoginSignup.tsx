@@ -109,6 +109,8 @@ const Login = () => {
       status: "active",
     });
 
+    if (!userSubscriptions.length) return;
+
     subscription?.prices.forEach((price) => {
       if (userSubscriptions[0].price === price.id) setIsSubscribed(true);
     });
