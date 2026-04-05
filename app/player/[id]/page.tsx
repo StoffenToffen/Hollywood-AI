@@ -2,8 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import AudioPlayer from "@/components/player/AudioPlayer";
 import { useMovieStore } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";

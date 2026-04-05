@@ -40,14 +40,10 @@
 }
 
 .favourites__movies {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 160px));
   gap: 32px;
   margin: 24px 0 40px;
-}
-
-.favourites__movie {
-  width: 160px;
 }
 
 .favourites__empty {

@@ -10,8 +10,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import { app } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";

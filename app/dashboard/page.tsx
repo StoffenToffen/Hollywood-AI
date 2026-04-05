@@ -1,6 +1,6 @@
 import Movies from "@/components/dashboard/Movies";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import type { Movie } from "@/zustand/movieStore";
 import { fetchData } from "../fetches";
 

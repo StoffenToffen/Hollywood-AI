@@ -8,8 +8,8 @@ import {
 } from "@invertase/firestore-stripe-payments";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import Accordions from "@/components/plans/accordions";
 import { app } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";

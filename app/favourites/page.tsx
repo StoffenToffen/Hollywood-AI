@@ -1,13 +1,11 @@
 "use client";
 
 import { doc, getDoc } from "firebase/firestore";
-import { Clock, Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import AudioDuration from "@/components/dashboard/AudioDuration";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import MovieCard from "@/components/global/MovieCard";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import { db } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
 import type { Movie } from "@/zustand/movieStore";
@@ -22,7 +20,6 @@ const Page = () => {
   const [favouriteMovies, setFavouriteMovies] = useState<Movie[]>([]);
 
   const uid = useUserStore((state) => state.uid);
-  const isSubscribed = useUserStore((state) => state.isSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   useEffect(() => {
@@ -105,48 +102,9 @@ const Page = () => {
               </div>
             ) : favouriteMovies.length > 0 ? (
               <div className="favourites__movies">
-                {favouriteMovies.map(
-                  ({
-                    id,
-                    subscriptionRequired,
-                    director,
-                    title,
-                    rating,
-                    imageLink,
-                    audioLink,
-                  }) => (
-                    <Link
-                      key={id}
-                      href={`/movie/${id}`}
-                      className="movie favourites__movie"
-                    >
-                      {subscriptionRequired && !isSubscribed && (
-                        <span className="movie__pill">Premium</span>
-                      )}
-
-                      <Image
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        src={imageLink}
-                        alt={title}
-                        className="movie__img"
-                      />
-
-                      <h3 className="movie__title">{title}</h3>
-
-                      <span className="movie__director">{director}</span>
-
-                      <div className="movie__details">
-                        <Clock className="movie__details__icon" />
-                        <AudioDuration audioLink={audioLink} />
-
-                        <Star className="movie__details__icon" />
-                        <span>{rating}</span>
-                      </div>
-                    </Link>
-                  ),
-                )}
+                {favouriteMovies.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} />
+                ))}
               </div>
             ) : (
               <div className="favourites__empty">

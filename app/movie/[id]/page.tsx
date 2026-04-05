@@ -2,9 +2,9 @@ import { Calendar, Clock, Mic, Star } from "lucide-react";
 import Image from "next/image";
 
 import { fetchData } from "@/app/fetches";
-import AudioDuration from "@/components/dashboard/AudioDuration";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import AudioDuration from "@/components/global/AudioDuration";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import Buttons from "@/components/movie-details/Buttons";
 import type { Movie } from "@/zustand/movieStore";
 

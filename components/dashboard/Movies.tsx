@@ -1,20 +1,14 @@
 "use client";
 
-import { Clock, Star } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Movie } from "@/zustand/movieStore";
-import { useUserStore } from "@/zustand/userStore";
-import AudioDuration from "./AudioDuration";
+import MovieCard from "../global/MovieCard";
 
 interface MoviesProps {
   movies: Movie[];
 }
 
 const Movies = ({ movies }: MoviesProps) => {
-  const isSubscribed = useUserStore((state) => state.isSubscribed);
-
   const swiperSettings = {
     spaceBetween: 20,
     slidesPerView: 2.3,
@@ -41,46 +35,11 @@ const Movies = ({ movies }: MoviesProps) => {
   return (
     <Swiper {...swiperSettings} className="movies__list">
       {movies
-        ? movies.map(
-            ({
-              id,
-              subscriptionRequired,
-              director,
-              title,
-              rating,
-              imageLink,
-              audioLink,
-            }) => (
-              <SwiperSlide key={id}>
-                <Link href={`/movie/${id}`} className="movie">
-                  {subscriptionRequired && !isSubscribed && (
-                    <span className="movie__pill">Premium</span>
-                  )}
-
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    src={imageLink}
-                    alt={title}
-                    className="movie__img"
-                  />
-
-                  <h3 className="movie__title">{title}</h3>
-
-                  <span className="movie__director">{director}</span>
-
-                  <div className="movie__details">
-                    <Clock className="movie__details__icon" />
-                    <AudioDuration audioLink={audioLink} />
-
-                    <Star className="movie__details__icon" />
-                    <span>{rating}</span>
-                  </div>
-                </Link>
-              </SwiperSlide>
-            ),
-          )
+        ? movies.map((movie) => (
+            <SwiperSlide key={movie.id}>
+              <MovieCard movie={movie} />
+            </SwiperSlide>
+          ))
         : null}
     </Swiper>
   );
