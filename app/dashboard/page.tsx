@@ -1,19 +1,10 @@
 import MovieCarousel from "@/components/dashboard/MovieCarousel";
 import Nav from "@/components/global/Nav";
 import Search from "@/components/global/Search";
-import type { Movie } from "@/zustand/movieStore";
-import { fetchData } from "../fetches";
 
-import "swiper/css";
-import "swiper/css/navigation";
 import "./page.css";
 
-const Page = async () => {
-  const [selectedMovies, topMovies] = await Promise.all([
-    fetchData<Movie[]>("selectedMovies"),
-    fetchData<Movie[]>("topMovies"),
-  ]);
-
+const Page = () => {
   return (
     <div className="page-wrapper">
       <Nav />
@@ -38,7 +29,7 @@ const Page = async () => {
 
             <span className="movies__subtext">We think you'll like these.</span>
 
-            <MovieCarousel movies={selectedMovies} />
+            <MovieCarousel movieParams="selectedMovies" />
           </div>
         </section>
 
@@ -50,7 +41,7 @@ const Page = async () => {
               Enjoy our highest rated films.
             </span>
 
-            <MovieCarousel movies={topMovies} />
+            <MovieCarousel movieParams="topMovies" />
           </div>
         </section>
       </div>
