@@ -7,13 +7,21 @@ import { useEffect, useState } from "react";
 import { fetchData } from "@/app/fetches";
 import { useDebounce } from "@/app/hooks";
 import type { Movie } from "@/zustand/movieStore";
+import SearchSkeleton from "../loading-states/SearchSkeleton";
 import AudioDuration from "./AudioDuration";
 
 const Search = () => {
   const [searchInput, setSeachInput] = useState("");
   const [searchResults, setSeachResults] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const debounceSearch = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    if (!searchInput) return;
+
+    setIsLoading(true);
+  }, [searchInput]);
 
   useEffect(() => {
     if (!debounceSearch.trim()) {
@@ -27,6 +35,7 @@ const Search = () => {
       );
 
       setSeachResults(fetchedData);
+      setIsLoading(false);
     })();
   }, [debounceSearch]);
 
@@ -49,7 +58,7 @@ const Search = () => {
             <div className="searchbar__results">
               <h3 className="searchbar__results__title">Search Results</h3>
 
-              {searchResults.length > 0 ? (
+              {searchResults.length > 0 && !isLoading ? (
                 searchResults?.map((movie) => (
                   <Link
                     href={`/movie/${movie.id}`}
@@ -81,6 +90,10 @@ const Search = () => {
                     </div>
                   </Link>
                 ))
+              ) : isLoading ? (
+                new Array(6)
+                  .fill(0)
+                  .map((_, index) => <SearchSkeleton key={index} />)
               ) : (
                 <div className="searchbar__results__none">
                   <strong>No results.</strong>
