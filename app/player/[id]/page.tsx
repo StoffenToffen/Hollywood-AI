@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Nav from "@/components/global/Nav";
 import Search from "@/components/global/Search";
+import LoadingSpinner from "@/components/loading-states/LoadingSpinner";
 import AudioPlayer from "@/components/player/AudioPlayer";
 import { useMovieStore } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";
@@ -39,7 +40,7 @@ const Page = () => {
             <AudioPlayer movie={movie} />
           </>
         ) : (
-          <p>Movie not found. Please select a movie from the dashboard</p>
+          <LoadingSpinner />
         )}
       </div>
     </div>

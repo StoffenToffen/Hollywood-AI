@@ -1,0 +1,13 @@
+.loading {
+  color: #0365f2;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  animation: spin 1s infinite;
+}
+
+@keyframes spin {
+  100% {
+    rotate: 360deg;
+  }
+}
