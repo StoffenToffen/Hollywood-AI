@@ -109,7 +109,10 @@ const Login = () => {
       status: "active",
     });
 
-    if (!userSubscriptions.length) return;
+    if (!userSubscriptions.length) {
+      setIsSubscribed(false);
+      return;
+    }
 
     subscription?.prices.forEach((price) => {
       if (userSubscriptions[0].price === price.id) setIsSubscribed(true);
@@ -118,7 +121,11 @@ const Login = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) return;
+      if (!currentUser) {
+        signInUser({ email: "", uid: "" });
+        setIsSubscribed(false);
+        return;
+      }
 
       signInUser(currentUser);
 
@@ -128,7 +135,7 @@ const Login = () => {
     });
 
     return unsubscribe;
-  }, [signInUser, checkIfSubscribed, subscription]);
+  }, [setIsSubscribed, signInUser, checkIfSubscribed, subscription]);
 
   useEffect(() => {
     const getSubscriptions = async () => {
