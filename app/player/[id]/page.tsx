@@ -40,7 +40,9 @@ const Page = () => {
             <AudioPlayer movie={movie} />
           </>
         ) : (
-          <LoadingSpinner />
+          <div className="page-row summary__row">
+            <LoadingSpinner width={40} color="#0365f2" />
+          </div>
         )}
       </div>
     </div>

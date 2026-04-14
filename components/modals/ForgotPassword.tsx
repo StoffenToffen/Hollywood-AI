@@ -8,9 +8,11 @@ import { useState } from "react";
 import { auth } from "@/firebase";
 import { mapAuthCodeToMessage } from "@/firebaseErrors";
 import { useModalStore } from "@/zustand/modalStore";
+import LoadingSpinner from "../loading-states/LoadingSpinner";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const error = useModalStore((state) => state.error);
   const setError = useModalStore((state) => state.setError);
@@ -23,12 +25,16 @@ const ForgotPassword = () => {
     e,
   ) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
       await sendPasswordResetEmail(auth, email);
       alert(`An email with instructions have been sent to ${email}`);
       togglePasswordModal();
+      setIsLoading(false);
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
+      setIsLoading(false);
     }
   };
 
@@ -69,7 +75,7 @@ const ForgotPassword = () => {
           />
 
           <button type="submit" className="modal__form__submit">
-            Send Instructions
+            {isLoading ? <LoadingSpinner width={20} /> : "Send Instructions"}
           </button>
         </form>
       </div>

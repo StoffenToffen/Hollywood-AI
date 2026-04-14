@@ -1,8 +1,9 @@
-.loading {
-  color: #0365f2;
-  width: 40px;
-  height: 40px;
+.loading__wrapper {
   margin: 0 auto;
+}
+
+.loading {
+  height: auto;
   animation: spin 1s infinite;
 }
 

@@ -27,6 +27,7 @@ import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";
 
 import "./modals.css";
+import LoadingSpinner from "../loading-states/LoadingSpinner";
 
 const payments = getStripePayments(app, {
   productsCollection: "products",
@@ -38,6 +39,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [subscription, setSubscription] = useState<Product>();
+  const [signInGuestLoading, setSingInGuestLoading] = useState(false);
+  const [signInGoogleLoading, setSingInGoogleLoading] = useState(false);
+  const [signInEmailLoading, setSingInEmailLoading] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -58,15 +62,19 @@ const Login = () => {
   ) => {
     e.preventDefault();
     let userCredentials: UserCredential;
+
     try {
       switch (method) {
         case "guest":
+          setSingInGuestLoading(true);
           userCredentials = await signInAnonymously(auth);
           break;
         case "google":
+          setSingInGoogleLoading(true);
           userCredentials = await signInWithPopup(auth, provider);
           break;
         case "newUser":
+          setSingInEmailLoading(true);
           userCredentials = await createUserWithEmailAndPassword(
             auth,
             email,
@@ -74,6 +82,7 @@ const Login = () => {
           );
           break;
         default:
+          setSingInEmailLoading(true);
           userCredentials = await signInWithEmailAndPassword(
             auth,
             email,
@@ -96,11 +105,17 @@ const Login = () => {
         toggleLoginModal();
         setEmail("");
         setPassword("");
+        setSingInGuestLoading(false);
+        setSingInGoogleLoading(false);
+        setSingInEmailLoading(false);
 
         if (pathname === "/") router.push("/dashboard");
       }
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
+      setSingInGuestLoading(false);
+      setSingInGoogleLoading(false);
+      setSingInEmailLoading(false);
     }
   };
 
@@ -183,7 +198,13 @@ const Login = () => {
             className="modal__login-option__icon"
           />
 
-          <span>Login with Google</span>
+          <span>
+            {signInGoogleLoading ? (
+              <LoadingSpinner width={20} />
+            ) : (
+              "Login with Google"
+            )}
+          </span>
         </button>
 
         <button
@@ -193,7 +214,13 @@ const Login = () => {
         >
           <UserIcon fill="currentColor" className="modal__login-option__icon" />
 
-          <span>Login as Guest</span>
+          <span>
+            {signInGuestLoading ? (
+              <LoadingSpinner width={20} />
+            ) : (
+              "Login as Guest"
+            )}
+          </span>
         </button>
 
         <div className="modal__break">
@@ -254,7 +281,13 @@ const Login = () => {
           )}
 
           <button type="submit" className="modal__form__submit">
-            {isLogin ? "Log In" : "Sign Up"}
+            {signInEmailLoading ? (
+              <LoadingSpinner width={20} />
+            ) : isLogin ? (
+              "Log In"
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 

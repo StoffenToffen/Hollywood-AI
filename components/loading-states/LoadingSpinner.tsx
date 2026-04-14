@@ -1,11 +1,22 @@
 import { LoaderCircle } from "lucide-react";
 
-import "./LoadingSpinner.css"
+import "./LoadingSpinner.css";
 
-const LoadingSpinner = () => {
+interface LoadingSpinnerProps {
+  width: number | string;
+  color?: string;
+}
+
+const LoadingSpinner = ({ width, color }: LoadingSpinnerProps) => {
   return (
-    <div className="page-row summary__row">
-      <LoaderCircle className="loading"/>
+    <div className="loading__wrapper">
+      <LoaderCircle
+        className="loading"
+        style={{
+          width,
+          color,
+        }}
+      />
     </div>
   );
 };
