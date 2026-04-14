@@ -10,6 +10,7 @@ import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Nav from "@/components/global/Nav";
 import Search from "@/components/global/Search";
+import Skeleton from "@/components/loading-states/Skeleton";
 import Accordions from "@/components/plans/accordions";
 import { app } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
@@ -77,68 +78,79 @@ const Page = () => {
             <h2 className="plans__title">Subscription Plans:</h2>
 
             <div className="plans__cards">
-              {subscription?.prices.map((price) => (
-                <div key={price.id} className="plans__card">
-                  <div className="plans__card__price">
-                    <span className="plans__card__price__currency">$</span>
-                    <span className="plans__card__price__amount">
-                      {(price.unit_amount / 100).toFixed(2)}
-                    </span>
-                    <span className="plans__card__price__duration">
-                      {`${price.interval[0].toUpperCase()}${price.interval?.slice(1)}ly`}
-                    </span>
-                  </div>
+              {subscription ? (
+                subscription.prices.map((price) => (
+                  <div key={price.id} className="plans__card">
+                    <div className="plans__card__price">
+                      <span className="plans__card__price__currency">$</span>
+                      <span className="plans__card__price__amount">
+                        {price.unit_amount
+                          ? (price.unit_amount / 100).toFixed(2)
+                          : "---"}
+                      </span>
+                      <span className="plans__card__price__duration">
+                        {price.interval
+                          ? `${price.interval[0].toUpperCase()}${price.interval?.slice(1)}ly`
+                          : "---"}
+                      </span>
+                    </div>
 
-                  <h3 className="plans__card__title">Premium</h3>
+                    <h3 className="plans__card__title">Premium</h3>
 
-                  <ul className="plans__card__perks">
-                    {price.interval === "year" && (
+                    <ul className="plans__card__perks">
+                      {price.interval === "year" && (
+                        <li className="plans__card__perk">
+                          <Check className="plans__card__perk__icon" /> 2 Free
+                          Months
+                        </li>
+                      )}
                       <li className="plans__card__perk">
-                        <Check className="plans__card__perk__icon" /> 2 Free
-                        Months
+                        <Check className="plans__card__perk__icon" /> Access
+                        100+ Summaries
                       </li>
-                    )}
-                    <li className="plans__card__perk">
-                      <Check className="plans__card__perk__icon" /> Access 100+
-                      Summaries
-                    </li>
-                    <li className="plans__card__perk">
-                      <Check className="plans__card__perk__icon" /> Higher
-                      Quality Audio
-                    </li>
-                    <li className="plans__card__perk">
-                      <Check className="plans__card__perk__icon" /> License For
-                      Commercial Use
-                    </li>
-                    <li className="plans__card__perk">
-                      <Check className="plans__card__perk__icon" /> 3 Supported
-                      Devices
-                    </li>
-                  </ul>
+                      <li className="plans__card__perk">
+                        <Check className="plans__card__perk__icon" /> Higher
+                        Quality Audio
+                      </li>
+                      <li className="plans__card__perk">
+                        <Check className="plans__card__perk__icon" /> License
+                        For Commercial Use
+                      </li>
+                      <li className="plans__card__perk">
+                        <Check className="plans__card__perk__icon" /> 3
+                        Supported Devices
+                      </li>
+                    </ul>
 
-                  {isSubscribed ? (
-                    <button
-                      type="button"
-                      className="plans__card__btn plans__btn--disabled"
-                      disabled={true}
-                    >
-                      Already Subscribed
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="plans__card__btn"
-                      onClick={() => {
-                        email
-                          ? upgradeSubscription(price.id)
-                          : toggleLoginModal();
-                      }}
-                    >
-                      Choose plan
-                    </button>
-                  )}
-                </div>
-              ))}
+                    {isSubscribed ? (
+                      <button
+                        type="button"
+                        className="plans__card__btn plans__btn--disabled"
+                        disabled={true}
+                      >
+                        Already Subscribed
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="plans__card__btn"
+                        onClick={() => {
+                          email
+                            ? upgradeSubscription(price.id)
+                            : toggleLoginModal();
+                        }}
+                      >
+                        Choose plan
+                      </button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <>
+                  <Skeleton width={"100%"} height={400} borderRadius={20} />
+                  <Skeleton width={"100%"} height={400} borderRadius={20} />
+                </>
+              )}
             </div>
           </div>
         </section>
