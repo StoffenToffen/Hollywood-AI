@@ -25,6 +25,8 @@ const payments = getStripePayments(app, {
 
 const Page = () => {
   const [subscription, setSubscription] = useState<Product>();
+  const [isLoading, setIsLoading] = useState(true);
+
   const email = useUserStore((state) => state.email);
   const isSubscribed = useUserStore((state) => state.isSubscribed);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
@@ -52,6 +54,8 @@ const Page = () => {
         setSubscription(products[0]);
       } catch (err) {
         console.error(`Failed to load subscription plans: ${err}`);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -78,13 +82,18 @@ const Page = () => {
             <h2 className="plans__title">Subscription Plans:</h2>
 
             <div className="plans__cards">
-              {subscription ? (
+              {isLoading ? (
+                <>
+                  <Skeleton width={"100%"} height={400} borderRadius={20} />
+                  <Skeleton width={"100%"} height={400} borderRadius={20} />
+                </>
+              ) : subscription ? (
                 subscription.prices.map((price) => (
                   <div key={price.id} className="plans__card">
                     <div className="plans__card__price">
                       <span className="plans__card__price__currency">$</span>
                       <span className="plans__card__price__amount">
-                        {price.unit_amount
+                        {price.unit_amount !== null
                           ? (price.unit_amount / 100).toFixed(2)
                           : "---"}
                       </span>
@@ -146,10 +155,7 @@ const Page = () => {
                   </div>
                 ))
               ) : (
-                <>
-                  <Skeleton width={"100%"} height={400} borderRadius={20} />
-                  <Skeleton width={"100%"} height={400} borderRadius={20} />
-                </>
+                <h3>No available plans were found at this moment</h3>
               )}
             </div>
           </div>

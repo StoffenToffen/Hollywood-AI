@@ -2,7 +2,7 @@ import Skeleton from "./Skeleton";
 
 const SearchSkeleton = () => {
   return (
-    <div className="searchbar__results__movie">
+    <div className="searchbar__results__movie" aria-hidden="true">
       <div className="searchbar__results__movie__poster">
         <Skeleton width={56} height={84} borderRadius={4} />
       </div>

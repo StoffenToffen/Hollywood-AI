@@ -29,7 +29,11 @@ const Page = () => {
       <div className="page-content">
         <Search />
 
-        {movie && movie.id === id ? (
+        {!movie ? (
+          <div className="page-row summary__row">
+            <LoadingSpinner width={40} color="#0365f2" />
+          </div>
+        ) : movie.id === id ? (
           <>
             <div className="page-row summary__row">
               <h1 className="summary__title">{movie.title}</h1>
@@ -41,7 +45,7 @@ const Page = () => {
           </>
         ) : (
           <div className="page-row summary__row">
-            <LoadingSpinner width={40} color="#0365f2" />
+            <p className="summary__text">Movie not found for this URL</p>
           </div>
         )}
       </div>

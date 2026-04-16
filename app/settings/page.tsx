@@ -27,7 +27,7 @@ const payments = getStripePayments(app, {
 const Page = () => {
   const [subscriptionInfo, setSubscriptionInfo] = useState<Subscription>();
   const [subscription, setSubscription] = useState<Product>();
-  const [subscriptionPrice, setSubscriptionPrice] = useState<number | null>(0);
+  const [subscriptionPrice, setSubscriptionPrice] = useState<number | null>(null);
 
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const email = useUserStore((state) => state.email);
@@ -49,7 +49,7 @@ const Page = () => {
             (price) => price.id === userSubscriptions[0].price,
           );
 
-          setSubscriptionPrice(price?.unit_amount || null);
+          setSubscriptionPrice(price?.unit_amount ?? null);
         }
       }
     })();
@@ -139,7 +139,7 @@ const Page = () => {
 
                       <span className="settings__info__text">
                         <strong>Charge Amount: </strong>$
-                        {subscriptionPrice
+                        {subscriptionPrice !== null
                           ? (subscriptionPrice / 100).toFixed(2)
                           : "---"}
                       </span>

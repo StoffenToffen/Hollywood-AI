@@ -8,6 +8,7 @@ import MovieCard from "../global/MovieCard";
 import MovieCardSkeleton from "../loading-states/MovieCardSkeleton";
 
 import "swiper/css";
+import { useUserStore } from "@/zustand/userStore";
 
 interface MovieCarouselProps {
   movieParams: string;
@@ -15,6 +16,9 @@ interface MovieCarouselProps {
 
 const MovieCarousel = ({ movieParams }: MovieCarouselProps) => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const subscribedFetched = useUserStore((state) => state.subscribedFetched);
 
   const swiperSettings = {
     spaceBetween: 20,
@@ -30,20 +34,25 @@ const MovieCarousel = ({ movieParams }: MovieCarouselProps) => {
   };
 
   useEffect(() => {
-    fetchData<Movie[]>(movieParams).then(setMovies);
-  }, [movieParams]);
+    if (!subscribedFetched) return;
+
+    fetchData<Movie[]>(movieParams)
+      .then(setMovies)
+      .catch(() => setMovies([]))
+      .finally(() => setIsLoading(false));
+  }, [subscribedFetched, movieParams]);
 
   return (
     <Swiper {...swiperSettings} className="movies__list">
-      {movies.length > 0
-        ? movies.map((movie) => (
-            <SwiperSlide key={movie.id}>
-              <MovieCard movie={movie} />
-            </SwiperSlide>
-          ))
-        : new Array(8).fill(0).map((_, index) => (
+      {isLoading
+        ? new Array(8).fill(0).map((_, index) => (
             <SwiperSlide key={index}>
               <MovieCardSkeleton />
+            </SwiperSlide>
+          ))
+        : movies.map((movie) => (
+            <SwiperSlide key={movie.id}>
+              <MovieCard movie={movie} />
             </SwiperSlide>
           ))}
     </Swiper>

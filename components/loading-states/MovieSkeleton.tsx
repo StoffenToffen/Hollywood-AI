@@ -3,10 +3,10 @@ import Skeleton from "./Skeleton";
 const MovieSkeleton = () => {
   return (
     <>
-      <section className="movie-info">
-        <h1 className="movie-info__title">
+      <section className="movie-info" aria-hidden="true">
+        <div className="movie-info__title">
           <Skeleton width={200} height={40} borderRadius={8} />
-        </h1>
+        </div>
 
         <span className="movie-info__director">
           <Skeleton width={120} height={20} borderRadius={4} />
@@ -48,14 +48,20 @@ const MovieSkeleton = () => {
           <Skeleton width={160} height={40} borderRadius={4} />
         </div>
 
-        <h2 className="movie-info__subtitle">
+        <div className="movie-info__subtitle">
           <Skeleton width={100} height={20} borderRadius={4} />
-        </h2>
+        </div>
 
         <ul className="movie-info__tags">
-          <Skeleton width={100} height={40} borderRadius={4} />
-          <Skeleton width={100} height={40} borderRadius={4} />
-          <Skeleton width={100} height={40} borderRadius={4} />
+          <li>
+            <Skeleton width={100} height={40} borderRadius={4} />
+          </li>
+          <li>
+            <Skeleton width={100} height={40} borderRadius={4} />
+          </li>
+          <li>
+            <Skeleton width={100} height={40} borderRadius={4} />
+          </li>
         </ul>
 
         <div>
@@ -72,7 +78,7 @@ const MovieSkeleton = () => {
         </div>
       </section>
 
-      <div className="movie-info__poster">
+      <div className="movie-info__poster" aria-hidden="true">
         <Skeleton width={200} height={300} borderRadius={8} />
       </div>
     </>

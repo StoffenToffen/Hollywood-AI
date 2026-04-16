@@ -39,15 +39,18 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [subscription, setSubscription] = useState<Product>();
-  const [signInGuestLoading, setSingInGuestLoading] = useState(false);
-  const [signInGoogleLoading, setSingInGoogleLoading] = useState(false);
-  const [signInEmailLoading, setSingInEmailLoading] = useState(false);
+  const [signInGuestLoading, setSignInGuestLoading] = useState(false);
+  const [signInGoogleLoading, setSignInGoogleLoading] = useState(false);
+  const [signInEmailLoading, setSignInEmailLoading] = useState(false);
+  const isAuthenticating =
+    signInGuestLoading || signInGoogleLoading || signInEmailLoading;
 
   const router = useRouter();
   const pathname = usePathname();
 
   const setIsSubscribed = useUserStore((state) => state.setIsSubscribed);
   const signInUser = useUserStore((state) => state.signInUser);
+  const signOutUser = useUserStore((state) => state.signOutUser);
   const isOpen = useModalStore((state) => state.isLoginModalOpen);
   const error = useModalStore((state) => state.error);
   const setError = useModalStore((state) => state.setError);
@@ -61,20 +64,21 @@ const Login = () => {
     method?: string,
   ) => {
     e.preventDefault();
+    if (isAuthenticating) return;
     let userCredentials: UserCredential;
 
     try {
       switch (method) {
         case "guest":
-          setSingInGuestLoading(true);
+          setSignInGuestLoading(true);
           userCredentials = await signInAnonymously(auth);
           break;
         case "google":
-          setSingInGoogleLoading(true);
+          setSignInGoogleLoading(true);
           userCredentials = await signInWithPopup(auth, provider);
           break;
         case "newUser":
-          setSingInEmailLoading(true);
+          setSignInEmailLoading(true);
           userCredentials = await createUserWithEmailAndPassword(
             auth,
             email,
@@ -82,7 +86,7 @@ const Login = () => {
           );
           break;
         default:
-          setSingInEmailLoading(true);
+          setSignInEmailLoading(true);
           userCredentials = await signInWithEmailAndPassword(
             auth,
             email,
@@ -105,17 +109,17 @@ const Login = () => {
         toggleLoginModal();
         setEmail("");
         setPassword("");
-        setSingInGuestLoading(false);
-        setSingInGoogleLoading(false);
-        setSingInEmailLoading(false);
+        setSignInGuestLoading(false);
+        setSignInGoogleLoading(false);
+        setSignInEmailLoading(false);
 
         if (pathname === "/") router.push("/dashboard");
       }
     } catch (err) {
       setError(mapAuthCodeToMessage((err as FirebaseError).code));
-      setSingInGuestLoading(false);
-      setSingInGoogleLoading(false);
-      setSingInEmailLoading(false);
+      setSignInGuestLoading(false);
+      setSignInGoogleLoading(false);
+      setSignInEmailLoading(false);
     }
   };
 
@@ -129,16 +133,17 @@ const Login = () => {
       return;
     }
 
-    subscription?.prices.forEach((price) => {
-      if (userSubscriptions[0].price === price.id) setIsSubscribed(true);
-    });
+    setIsSubscribed(
+      subscription?.prices.some(
+        (price) => userSubscriptions[0].price === price.id,
+      ) || false,
+    );
   }, [setIsSubscribed, subscription]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
-        signInUser({ email: "", uid: "" });
-        setIsSubscribed(false);
+        signOutUser();
         return;
       }
 
@@ -150,17 +155,20 @@ const Login = () => {
     });
 
     return unsubscribe;
-  }, [setIsSubscribed, signInUser, checkIfSubscribed, subscription]);
+  }, [signOutUser, signInUser, checkIfSubscribed, subscription]);
 
   useEffect(() => {
-    const getSubscriptions = async () => {
-      const products = await getProducts(payments, {
-        includePrices: true,
-        activeOnly: true,
-      });
-      setSubscription(products[0]);
-    };
-    getSubscriptions();
+    (async () => {
+      try {
+        const products = await getProducts(payments, {
+          includePrices: true,
+          activeOnly: true,
+        });
+        setSubscription(products[0]);
+      } catch (err) {
+        console.error(`Failed to load subscription plans: ${err}`);
+      }
+    })();
   }, []);
 
   return (
@@ -187,6 +195,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
+          disabled={isAuthenticating}
           onClick={(e) => handleLogin(e, "google")}
         >
           <Image
@@ -210,6 +219,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
+          disabled={isAuthenticating}
           onClick={(e) => handleLogin(e, "guest")}
         >
           <UserIcon fill="currentColor" className="modal__login-option__icon" />
@@ -280,7 +290,11 @@ const Login = () => {
             </button>
           )}
 
-          <button type="submit" className="modal__form__submit">
+          <button
+            type="submit"
+            disabled={isAuthenticating}
+            className="modal__form__submit"
+          >
             {signInEmailLoading ? (
               <LoadingSpinner width={20} />
             ) : isLogin ? (

@@ -20,10 +20,11 @@ const Page = () => {
 
   const uid = useUserStore((state) => state.uid);
   const userFetched = useUserStore((state) => state.userFetched);
+  const subscribedFetched = useUserStore((state) => state.subscribedFetched);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   useEffect(() => {
-    if (!userFetched) return;
+    if (!userFetched || !subscribedFetched) return;
 
     if (!uid) {
       setFavouriteMovies([]);
@@ -35,22 +36,31 @@ const Page = () => {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const promises = docSnap
-            .data()
-            .favourites.map((favourite: string) =>
-              fetchData<Movie>("Movies", favourite),
-            );
-
-          const fetchedData = await Promise.all(promises);
-
-          setFavouriteMovies(fetchedData);
+        if (!docSnap.exists()) {
+          setFavouriteMovies([]);
+          return;
         }
+
+        const promises = (docSnap.data().favourites || []).map(
+          (favourite: string) => fetchData<Movie>("Movies", favourite),
+        );
+
+        const fetchedData = await Promise.allSettled(promises);
+
+        setFavouriteMovies(
+          fetchedData
+            .filter(
+              (result): result is PromiseFulfilledResult<Movie> =>
+                result.status === "fulfilled",
+            )
+            .map((result) => result.value),
+        );
       } catch (err) {
         console.error(err);
+        setFavouriteMovies([]);
       }
     })();
-  }, [userFetched, uid]);
+  }, [userFetched, subscribedFetched, uid]);
 
   return (
     <div className="page-wrapper">
@@ -67,7 +77,7 @@ const Page = () => {
               <header className="header">
                 <h1 className="favourites__title">Saved Movies</h1>
                 <span className="favourites__subtext">
-                  {favouriteMovies.length || 0} Movies
+                  {favouriteMovies.length} Movies
                 </span>
               </header>
             </div>

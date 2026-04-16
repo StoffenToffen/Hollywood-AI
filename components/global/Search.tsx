@@ -26,16 +26,22 @@ const Search = () => {
   useEffect(() => {
     if (!debounceSearch.trim()) {
       setSeachResults([]);
+      setIsLoading(false);
       return;
     }
 
     (async (): Promise<void> => {
-      const fetchedData = await fetchData<Movie[]>(
-        `movies?search=${debounceSearch}`,
-      );
+      try {
+        const fetchedData = await fetchData<Movie[]>(
+          `movies?search=${encodeURIComponent(debounceSearch.trim())}`,
+        );
 
-      setSeachResults(fetchedData);
-      setIsLoading(false);
+        setSeachResults(fetchedData);
+      } catch {
+        setSeachResults([]);
+      } finally {
+        setIsLoading(false);
+      }
     })();
   }, [debounceSearch]);
 

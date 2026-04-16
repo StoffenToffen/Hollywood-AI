@@ -10,6 +10,7 @@ const Skeleton = ({ width, height, borderRadius }: SkeletonProps) => {
   return (
     <div
       className="skeleton"
+      aria-hidden="true"
       style={{
         width,
         height,

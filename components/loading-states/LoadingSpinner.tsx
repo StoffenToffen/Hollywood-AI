@@ -9,7 +9,7 @@ interface LoadingSpinnerProps {
 
 const LoadingSpinner = ({ width, color }: LoadingSpinnerProps) => {
   return (
-    <div className="loading__wrapper">
+    <div className="loading__wrapper" aria-hidden="true">
       <LoaderCircle
         className="loading"
         style={{

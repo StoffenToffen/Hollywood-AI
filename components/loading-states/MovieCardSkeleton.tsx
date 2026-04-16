@@ -2,7 +2,7 @@ import Skeleton from "./Skeleton";
 
 const MovieCardSkeleton = () => {
   return (
-    <div className="movie">
+    <div className="movie" aria-hidden="true">
       <div className="movie__img">
         <Skeleton width={"100%"} height={"100%"} borderRadius={8} />
       </div>
