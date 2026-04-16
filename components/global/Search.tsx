@@ -4,38 +4,43 @@ import { Clock, Menu, SearchIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchData } from "@/app/fetches";
 import { useDebounce } from "@/app/hooks";
 import type { Movie } from "@/zustand/movieStore";
+import SearchSkeleton from "../loading-states/SearchSkeleton";
 import AudioDuration from "./AudioDuration";
 
 const Search = () => {
   const [searchInput, setSeachInput] = useState("");
   const [searchResults, setSeachResults] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const debounceSearch = useDebounce(searchInput, 300);
 
   useEffect(() => {
+    if (!searchInput) return;
+
+    setIsLoading(true);
+  }, [searchInput]);
+
+  useEffect(() => {
     if (!debounceSearch.trim()) {
       setSeachResults([]);
+      setIsLoading(false);
       return;
     }
 
     (async (): Promise<void> => {
       try {
-        setSeachResults([]);
-
-        const response = await fetch(
-          `https://advanced-internship-api-production.up.railway.app/movies?search=${debounceSearch}`,
+        const fetchedData = await fetchData<Movie[]>(
+          `movies?search=${encodeURIComponent(debounceSearch.trim())}`,
         );
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch movies: ${response.status}`);
-        }
-
-        const { data } = await response.json();
-        setSeachResults(data);
-      } catch (err) {
-        console.error(err);
+        setSeachResults(fetchedData);
+      } catch {
+        setSeachResults([]);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, [debounceSearch]);
@@ -59,7 +64,7 @@ const Search = () => {
             <div className="searchbar__results">
               <h3 className="searchbar__results__title">Search Results</h3>
 
-              {searchResults.length > 0 ? (
+              {searchResults.length > 0 && !isLoading ? (
                 searchResults?.map((movie) => (
                   <Link
                     href={`/movie/${movie.id}`}
@@ -91,6 +96,10 @@ const Search = () => {
                     </div>
                   </Link>
                 ))
+              ) : isLoading ? (
+                new Array(6)
+                  .fill(0)
+                  .map((_, index) => <SearchSkeleton key={index} />)
               ) : (
                 <div className="searchbar__results__none">
                   <strong>No results.</strong>

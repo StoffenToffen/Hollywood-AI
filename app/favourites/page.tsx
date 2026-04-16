@@ -1,32 +1,33 @@
 "use client";
 
 import { doc, getDoc } from "firebase/firestore";
-import { Clock, Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import AudioDuration from "@/components/dashboard/AudioDuration";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import MovieCard from "@/components/global/MovieCard";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import { db } from "@/firebase";
+import { useModalStore } from "@/zustand/modalStore";
 import type { Movie } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";
+import { fetchData } from "../fetches";
 
 import "./page.css";
-import "../dashboard/page.css";
-import { useModalStore } from "@/zustand/modalStore";
+import FavouritesSkeleton from "@/components/loading-states/FavouritesSkeleton";
 
 const Page = () => {
-  const [favourites, setFavourites] = useState<string[]>([]);
-  const [favouriteMovies, setFavouriteMovies] = useState<Movie[]>([]);
+  const [favouriteMovies, setFavouriteMovies] = useState<Movie[]>();
 
   const uid = useUserStore((state) => state.uid);
-  const isSubscribed = useUserStore((state) => state.isSubscribed);
+  const userFetched = useUserStore((state) => state.userFetched);
+  const subscribedFetched = useUserStore((state) => state.subscribedFetched);
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
 
   useEffect(() => {
+    if (!userFetched || !subscribedFetched) return;
+
     if (!uid) {
-      setFavourites([]);
+      setFavouriteMovies([]);
       return;
     }
 
@@ -35,38 +36,31 @@ const Page = () => {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          setFavourites(docSnap.data().favourites);
+        if (!docSnap.exists()) {
+          setFavouriteMovies([]);
+          return;
         }
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-  }, [uid]);
 
-  useEffect(() => {
-    if (favourites.length < 1) {
-      setFavouriteMovies([]);
-      return;
-    }
-
-    (async () => {
-      try {
-        const promises = favourites.map((favourite) =>
-          fetch(
-            `https://advanced-internship-api-production.up.railway.app/Movies/${favourite}`,
-          ).then((response) => response.json()),
+        const promises = (docSnap.data().favourites || []).map(
+          (favourite: string) => fetchData<Movie>("Movies", favourite),
         );
 
-        const data = await Promise.all(promises);
+        const fetchedData = await Promise.allSettled(promises);
 
-        setFavouriteMovies(data.map((item) => item.data));
+        setFavouriteMovies(
+          fetchedData
+            .filter(
+              (result): result is PromiseFulfilledResult<Movie> =>
+                result.status === "fulfilled",
+            )
+            .map((result) => result.value),
+        );
       } catch (err) {
         console.error(err);
-        throw err;
+        setFavouriteMovies([]);
       }
     })();
-  }, [favourites]);
+  }, [userFetched, subscribedFetched, uid]);
 
   return (
     <div className="page-wrapper">
@@ -75,93 +69,60 @@ const Page = () => {
       <div className="page-content">
         <Search />
 
-        <div className="page-row">
-          <header className="header">
-            <h1 className="favourites__title">Saved Movies</h1>
-            <span className="favourites__subtext">
-              {favouriteMovies.length} Movies
-            </span>
-          </header>
-        </div>
-
-        <section className="favourites">
-          <div className="page-row">
-            {!uid ? (
-              <div className="favourites__row">
-                <Image
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  src="/assets/login.webp"
-                  alt="person in front of a computer"
-                  className="favourites__img"
-                />
-
-                <span className="favourites__text">
-                  Sign in to see your favourited movies
+        {!favouriteMovies ? (
+          <FavouritesSkeleton />
+        ) : (
+          <>
+            <div className="page-row">
+              <header className="header">
+                <h1 className="favourites__title">Saved Movies</h1>
+                <span className="favourites__subtext">
+                  {favouriteMovies.length} Movies
                 </span>
+              </header>
+            </div>
 
-                <button
-                  type="button"
-                  className="favourites__btn"
-                  onClick={toggleLoginModal}
-                >
-                  Login
-                </button>
-              </div>
-            ) : favouriteMovies.length > 0 ? (
-              <div className="favourites__movies">
-                {favouriteMovies.map(
-                  ({
-                    id,
-                    subscriptionRequired,
-                    director,
-                    title,
-                    rating,
-                    imageLink,
-                    audioLink,
-                  }) => (
-                    <Link
-                      key={id}
-                      href={`/movie/${id}`}
-                      className="movie favourites__movie"
+            <section className="favourites">
+              <div className="page-row">
+                {!uid ? (
+                  <div className="favourites__row">
+                    <Image
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      src="/assets/login.webp"
+                      alt="person in front of a computer"
+                      className="favourites__img"
+                    />
+
+                    <span className="favourites__text">
+                      Sign in to see your favourited movies
+                    </span>
+
+                    <button
+                      type="button"
+                      className="favourites__btn"
+                      onClick={toggleLoginModal}
                     >
-                      {subscriptionRequired && !isSubscribed && (
-                        <span className="movie__pill">Premium</span>
-                      )}
-
-                      <Image
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        src={imageLink}
-                        alt={title}
-                        className="movie__img"
-                      />
-
-                      <h3 className="movie__title">{title}</h3>
-
-                      <span className="movie__director">{director}</span>
-
-                      <div className="movie__details">
-                        <Clock className="movie__details__icon" />
-                        <AudioDuration audioLink={audioLink} />
-
-                        <Star className="movie__details__icon" />
-                        <span>{rating}</span>
-                      </div>
-                    </Link>
-                  ),
+                      Login
+                    </button>
+                  </div>
+                ) : favouriteMovies.length > 0 ? (
+                  <div className="favourites__movies">
+                    {favouriteMovies.map((movie) => (
+                      <MovieCard key={movie.id} movie={movie} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="favourites__empty">
+                    <strong>Save your favourite movies!</strong>
+                    <span>When you save a movie, it will appear here.</span>
+                  </div>
                 )}
               </div>
-            ) : (
-              <div className="favourites__empty">
-                <strong>Save your favourite movies!</strong>
-                <span>When you save a movie, it will appear here.</span>
-              </div>
-            )}
-          </div>
-        </section>
+            </section>
+          </>
+        )}
       </div>
     </div>
   );

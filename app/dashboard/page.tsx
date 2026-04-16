@@ -1,35 +1,10 @@
-import Movies from "@/components/dashboard/Movies";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import MovieCarousel from "@/components/dashboard/MovieCarousel";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 
-import "swiper/css";
-import "swiper/css/navigation";
 import "./page.css";
 
-const fetchMovies = async (endpoint: string) => {
-  try {
-    const response = await fetch(
-      `https://advanced-internship-api-production.up.railway.app/${endpoint}`,
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${endpoint}: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-const Page = async () => {
-  const [selectedMovies, topMovies] = await Promise.all([
-    fetchMovies("selectedMovies"),
-    fetchMovies("topMovies"),
-  ]);
-
+const Page = () => {
   return (
     <div className="page-wrapper">
       <Nav />
@@ -54,7 +29,7 @@ const Page = async () => {
 
             <span className="movies__subtext">We think you'll like these.</span>
 
-            <Movies movies={selectedMovies} />
+            <MovieCarousel movieParams="selectedMovies" />
           </div>
         </section>
 
@@ -66,7 +41,7 @@ const Page = async () => {
               Enjoy our highest rated films.
             </span>
 
-            <Movies movies={topMovies} />
+            <MovieCarousel movieParams="topMovies" />
           </div>
         </section>
       </div>

@@ -10,13 +10,14 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
 import { app } from "@/firebase";
 import { useModalStore } from "@/zustand/modalStore";
 import { useUserStore } from "@/zustand/userStore";
 
 import "./page.css";
+import SettingsSkeleton from "@/components/loading-states/SettingsSkeleton";
 
 const payments = getStripePayments(app, {
   productsCollection: "products",
@@ -26,28 +27,33 @@ const payments = getStripePayments(app, {
 const Page = () => {
   const [subscriptionInfo, setSubscriptionInfo] = useState<Subscription>();
   const [subscription, setSubscription] = useState<Product>();
-  const [subscriptionPrice, setSubscriptionPrice] = useState<number | null>(0);
+  const [subscriptionPrice, setSubscriptionPrice] = useState<number | null>(null);
 
   const toggleLoginModal = useModalStore((state) => state.toggleLoginModal);
   const email = useUserStore((state) => state.email);
   const isSubscribed = useUserStore((state) => state.isSubscribed);
+  const userFetched = useUserStore((state) => state.userFetched);
+  const subscribedFetched = useUserStore((state) => state.subscribedFetched);
 
   useEffect(() => {
     (async () => {
-      if (email) {
+      if (email && isSubscribed && subscription) {
         const userSubscriptions = await getCurrentUserSubscriptions(payments, {
           status: "active",
         });
 
         setSubscriptionInfo(userSubscriptions[0]);
 
-        subscription?.prices.forEach((price) => {
-          if (userSubscriptions[0].price === price.id)
-            setSubscriptionPrice(price.unit_amount);
-        });
+        if (userSubscriptions.length) {
+          const price = subscription?.prices.find(
+            (price) => price.id === userSubscriptions[0].price,
+          );
+
+          setSubscriptionPrice(price?.unit_amount ?? null);
+        }
       }
     })();
-  }, [email, subscription]);
+  }, [email, isSubscribed, subscription]);
 
   useEffect(() => {
     (async () => {
@@ -78,7 +84,9 @@ const Page = () => {
 
         <section className="settings">
           <div className="page-row">
-            {!email ? (
+            {!userFetched || !subscribedFetched ? (
+              <SettingsSkeleton />
+            ) : !email ? (
               <div className="settings__row">
                 <Image
                   width={0}
@@ -116,20 +124,24 @@ const Page = () => {
                       <span className="settings__info__text">
                         <strong>Next Charge: </strong>
                         <time dateTime={subscriptionInfo?.current_period_end}>
-                          {new Date(
-                            subscriptionInfo?.current_period_end,
-                          ).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {subscriptionInfo
+                            ? new Date(
+                                subscriptionInfo.current_period_end,
+                              ).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "---"}
                         </time>
                       </span>
 
                       <span className="settings__info__text">
                         <strong>Charge Amount: </strong>$
-                        {(subscriptionPrice / 100).toFixed(2)}
+                        {subscriptionPrice !== null
+                          ? (subscriptionPrice / 100).toFixed(2)
+                          : "---"}
                       </span>
 
                       <Link

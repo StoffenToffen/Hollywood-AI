@@ -29,6 +29,13 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
   const setMovie = useMovieStore((state) => state.setMovie);
 
   const toggleFavourite = async () => {
+    if (!uid) return;
+
+    const newFavourites = favourites?.includes(id)
+      ? favourites.filter((favId) => favId !== id)
+      : [...(favourites || []), id];
+    setFavourites(newFavourites);
+
     try {
       const favRef = doc(db, "users", uid);
 
@@ -44,6 +51,7 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
 
       getFavourites();
     } catch (err) {
+      setFavourites(favourites);
       console.error("Failed to update favourites:", err);
     }
   };
@@ -53,7 +61,7 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
       try {
         const userRef = doc(db, "users", uid);
         const userSnap = await getDoc(userRef);
-        setFavourites(userSnap.data()?.favourites);
+        setFavourites(userSnap.data()?.favourites || []);
       } catch (err) {
         console.error("Failed to fetch favourites:", err);
         setFavourites([]);

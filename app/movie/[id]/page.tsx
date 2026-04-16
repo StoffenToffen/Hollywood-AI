@@ -1,40 +1,84 @@
 import { Calendar, Clock, Mic, Star } from "lucide-react";
 import Image from "next/image";
+import { Suspense } from "react";
 
-import AudioDuration from "@/components/dashboard/AudioDuration";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import { fetchData } from "@/app/fetches";
+import AudioDuration from "@/components/global/AudioDuration";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
+import MovieSkeleton from "@/components/loading-states/MovieSkeleton";
 import Buttons from "@/components/movie-details/Buttons";
+import type { Movie } from "@/zustand/movieStore";
 
 import "./page.css";
 
-const fetchMovie = async (id: string) => {
-  try {
-    const response = await fetch(
-      `https://advanced-internship-api-production.up.railway.app/Movies/${id}`,
-    );
+const PageContent = async ({ id }: { id: string }) => {
+  const movie = await fetchData<Movie>("Movies", id);
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch movie: ${response.status}`);
-    }
+  return (
+    <>
+      <section className="movie-info">
+        <h1 className="movie-info__title">
+          {movie.title} {movie.subscriptionRequired && "(Premium)"}
+        </h1>
 
-    const data = await response.json();
-    return data.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+        <span className="movie-info__director">{movie.director}</span>
+
+        <div className="movie-info__info">
+          <div className="movie-info__info__item__wrapper">
+            <div className="movie-info__info__item">
+              <Star className="movie-info__info__item__icon" /> {movie.rating} /
+              10
+            </div>
+
+            <div className="movie-info__info__item">
+              <Mic className="movie-info__info__item__icon" />
+              {movie.type}
+            </div>
+          </div>
+
+          <div className="movie-info__info__item__wrapper">
+            <div className="movie-info__info__item">
+              <Clock className="movie-info__info__item__icon" />{" "}
+              <AudioDuration audioLink={movie.audioLink} />
+            </div>
+
+            <div className="movie-info__info__item">
+              <Calendar className="movie-info__info__item__icon" />
+              {movie.releaseYear}
+            </div>
+          </div>
+        </div>
+
+        <Buttons id={id} movie={movie} />
+
+        <h2 className="movie-info__subtitle">What's it about?</h2>
+
+        <ul className="movie-info__tags">
+          {movie.tags.map((tag: string) => (
+            <li key={tag} className="movie-info__tag">
+              {tag}
+            </li>
+          ))}
+        </ul>
+
+        <p>{movie.movieDescription}</p>
+      </section>
+
+      <Image
+        width={0}
+        height={0}
+        sizes="100vw"
+        src={movie.imageLink}
+        alt={movie.title}
+        className="movie-info__poster"
+      />
+    </>
+  );
 };
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const movie = await fetchMovie(id);
 
   return (
     <div className="page-wrapper">
@@ -44,62 +88,9 @@ const Page = async ({ params }: PageProps) => {
         <Search />
 
         <div className="page-row movie-info__row">
-          <section className="movie-info">
-            <h1 className="movie-info__title">
-              {movie.title} {movie.subscriptionRequired && "(Premium)"}
-            </h1>
-
-            <span className="movie-info__director">{movie.director}</span>
-
-            <div className="movie-info__info">
-              <div className="movie-info__info__item__wrapper">
-                <div className="movie-info__info__item">
-                  <Star className="movie-info__info__item__icon" />{" "}
-                  {movie.rating} / 10
-                </div>
-
-                <div className="movie-info__info__item">
-                  <Mic className="movie-info__info__item__icon" />
-                  {movie.type}
-                </div>
-              </div>
-
-              <div className="movie-info__info__item__wrapper">
-                <div className="movie-info__info__item">
-                  <Clock className="movie-info__info__item__icon" />{" "}
-                  <AudioDuration audioLink={movie.audioLink} />
-                </div>
-
-                <div className="movie-info__info__item">
-                  <Calendar className="movie-info__info__item__icon" />
-                  {movie.releaseYear}
-                </div>
-              </div>
-            </div>
-
-            <Buttons id={id} movie={movie} />
-
-            <h2 className="movie-info__subtitle">What's it about?</h2>
-
-            <ul className="movie-info__tags">
-              {movie.tags.map((tag: string) => (
-                <li key={tag} className="movie-info__tag">
-                  {tag}
-                </li>
-              ))}
-            </ul>
-
-            <p>{movie.movieDescription}</p>
-          </section>
-
-          <Image
-            width={0}
-            height={0}
-            sizes="100vw"
-            src={movie.imageLink}
-            alt={movie.title}
-            className="movie-info__poster"
-          />
+          <Suspense fallback={<MovieSkeleton />}>
+            <PageContent id={id} />
+          </Suspense>
         </div>
       </div>
     </div>

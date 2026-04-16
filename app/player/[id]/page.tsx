@@ -2,8 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Nav from "@/components/dashboard/Nav";
-import Search from "@/components/dashboard/Search";
+import Nav from "@/components/global/Nav";
+import Search from "@/components/global/Search";
+import LoadingSpinner from "@/components/loading-states/LoadingSpinner";
 import AudioPlayer from "@/components/player/AudioPlayer";
 import { useMovieStore } from "@/zustand/movieStore";
 import { useUserStore } from "@/zustand/userStore";
@@ -28,7 +29,11 @@ const Page = () => {
       <div className="page-content">
         <Search />
 
-        {movie && movie.id === id ? (
+        {!movie ? (
+          <div className="page-row summary__row">
+            <LoadingSpinner width={40} color="#0365f2" />
+          </div>
+        ) : movie.id === id ? (
           <>
             <div className="page-row summary__row">
               <h1 className="summary__title">{movie.title}</h1>
@@ -39,7 +44,9 @@ const Page = () => {
             <AudioPlayer movie={movie} />
           </>
         ) : (
-          <p>Movie not found. Please select a movie from the dashboard</p>
+          <div className="page-row summary__row">
+            <p className="summary__text">Movie not found for this URL</p>
+          </div>
         )}
       </div>
     </div>
