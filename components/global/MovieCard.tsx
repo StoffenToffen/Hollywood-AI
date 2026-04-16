@@ -9,11 +9,7 @@ import AudioDuration from "../global/AudioDuration";
 
 import "./MovieCard.css";
 
-interface MovieCardProps {
-  movie: Movie;
-}
-
-const MovieCard = ({ movie }: MovieCardProps) => {
+const MovieCard = ({ movie }: { movie: Movie }) => {
   const isSubscribed = useUserStore((state) => state.isSubscribed);
 
   return (

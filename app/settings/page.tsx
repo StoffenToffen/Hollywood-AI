@@ -139,7 +139,7 @@ const Page = () => {
 
                       <span className="settings__info__text">
                         <strong>Charge Amount: </strong>$
-                        {subscriptionPrice
+                        {subscriptionPrice !== null
                           ? (subscriptionPrice / 100).toFixed(2)
                           : "---"}
                       </span>

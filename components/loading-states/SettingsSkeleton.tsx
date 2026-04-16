@@ -3,7 +3,7 @@ import Skeleton from "./Skeleton";
 const SettingsSkeleton = () => {
   return (
     <>
-      <div className="settings__info">
+      <div className="settings__info" aria-hidden="true">
         <div className="settings__info__title">
           <Skeleton width={120} height={20} borderRadius={4} />
         </div>
@@ -21,7 +21,7 @@ const SettingsSkeleton = () => {
         </div>
       </div>
 
-      <div className="settings__info">
+      <div className="settings__info" aria-hidden="true">
         <div className="settings__info__title">
           <Skeleton width={80} height={20} borderRadius={4} />
         </div>

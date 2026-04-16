@@ -18,7 +18,20 @@ export const useUserStore = create<UserStore>((set) => ({
   isSubscribed: false,
   userFetched: false,
   subscribedFetched: false,
-  signInUser: (user) => set(() => ({ email: user.email ?? "", uid: user.uid, userFetched: true })),
-  signOutUser: () => set(() => ({ email: "", uid: "", userFetched: true })),
-  setIsSubscribed: (boolean) => set(() => ({ isSubscribed: boolean, subscribedFetched: true })),
+  signInUser: (user) =>
+    set(() => ({
+      email: user.email ?? "",
+      uid: user.uid ?? "",
+      userFetched: true,
+    })),
+  signOutUser: () =>
+    set(() => ({
+      email: "",
+      uid: "",
+      isSubscribed: false,
+      userFetched: true,
+      subscribedFetched: false,
+    })),
+  setIsSubscribed: (boolean) =>
+    set(() => ({ isSubscribed: boolean, subscribedFetched: true })),
 }));

@@ -42,6 +42,8 @@ const Login = () => {
   const [signInGuestLoading, setSingInGuestLoading] = useState(false);
   const [signInGoogleLoading, setSingInGoogleLoading] = useState(false);
   const [signInEmailLoading, setSingInEmailLoading] = useState(false);
+  const isAuthenticating =
+    signInGuestLoading || signInGoogleLoading || signInEmailLoading;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -61,6 +63,7 @@ const Login = () => {
     method?: string,
   ) => {
     e.preventDefault();
+    if (isAuthenticating) return;
     let userCredentials: UserCredential;
 
     try {
@@ -129,9 +132,11 @@ const Login = () => {
       return;
     }
 
-    subscription?.prices.forEach((price) => {
-      if (userSubscriptions[0].price === price.id) setIsSubscribed(true);
-    });
+    setIsSubscribed(
+      subscription?.prices.some(
+        (price) => userSubscriptions[0].price === price.id,
+      ) || false,
+    );
   }, [setIsSubscribed, subscription]);
 
   useEffect(() => {
@@ -187,6 +192,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
+          disabled={isAuthenticating}
           onClick={(e) => handleLogin(e, "google")}
         >
           <Image
@@ -210,6 +216,7 @@ const Login = () => {
         <button
           type="button"
           className="modal__login-option"
+          disabled={isAuthenticating}
           onClick={(e) => handleLogin(e, "guest")}
         >
           <UserIcon fill="currentColor" className="modal__login-option__icon" />
@@ -280,7 +287,11 @@ const Login = () => {
             </button>
           )}
 
-          <button type="submit" className="modal__form__submit">
+          <button
+            type="submit"
+            disabled={isAuthenticating}
+            className="modal__form__submit"
+          >
             {signInEmailLoading ? (
               <LoadingSpinner width={20} />
             ) : isLogin ? (

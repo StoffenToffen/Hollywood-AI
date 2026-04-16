@@ -33,7 +33,7 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
 
     const newFavourites = favourites?.includes(id)
       ? favourites.filter((favId) => favId !== id)
-      : [...favourites, id];
+      : [...(favourites || []), id];
     setFavourites(newFavourites);
 
     try {
@@ -61,7 +61,7 @@ const Buttons = ({ id, movie }: ButtonsProps) => {
       try {
         const userRef = doc(db, "users", uid);
         const userSnap = await getDoc(userRef);
-        setFavourites(userSnap.data()?.favourites);
+        setFavourites(userSnap.data()?.favourites || []);
       } catch (err) {
         console.error("Failed to fetch favourites:", err);
         setFavourites([]);
