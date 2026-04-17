@@ -1,5 +1,7 @@
 import Skeleton from "./Skeleton";
 
+import "../global/MovieCard.css";
+
 const MovieCardSkeleton = () => {
   return (
     <div className="movie" aria-hidden="true">

@@ -20,7 +20,7 @@ const Nav = () => {
         />
       </Link>
       <div className="landing-nav__links">
-        <Link href="#summary" className="landing-nav__link">
+        <Link href="#about" className="landing-nav__link">
           About
         </Link>
         <Link href="#features" className="landing-nav__link">
