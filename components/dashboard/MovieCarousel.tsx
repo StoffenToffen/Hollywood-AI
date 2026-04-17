@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { fetchData } from "@/app/fetches";
 import type { Movie } from "@/zustand/movieStore";
+import { useUserStore } from "@/zustand/userStore";
 import MovieCard from "../global/MovieCard";
 import MovieCardSkeleton from "../loading-states/MovieCardSkeleton";
 
 import "swiper/css";
-import { useUserStore } from "@/zustand/userStore";
 
 interface MovieCarouselProps {
   movieParams: string;
